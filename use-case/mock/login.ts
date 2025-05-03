@@ -13,13 +13,7 @@ interface LoginResponse {
     userId: string
 }
 
-export async function login(
-    loginPayload: LoginPayload
-): Promise<LoginResponse> {
+export async function login(payload: LoginPayload): Promise<LoginResponse> {
     await simulateLatency()
-    // redirect(`/}`)
-    return {
-        username: loginPayload.username,
-        userId: '12345',
-    }
+    redirect('/')
 }
