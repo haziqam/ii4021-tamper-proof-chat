@@ -10,22 +10,32 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { FormEventHandler } from 'react'
+import { ChangeEventHandler, FormEventHandler, useState } from 'react'
 import { register } from '@/use-case/mock/register'
 
 export function RegisterForm() {
-    const onSubmit: FormEventHandler = (e) => {
+    const [formData, setFormData] = useState({
+        username: '',
+        publicKey: '',
+        password: '',
+        confirmPassword: '',
+    })
+
+    const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const { id, value } = e.target
+        setFormData((prev) => ({
+            ...prev,
+            [id]: value,
+        }))
+    }
+
+    const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault()
-        register({
-            username: '',
-            publicKey: '',
-            password: '',
-            confirmPassword: '',
-        })
+        register(formData)
     }
 
     return (
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit}>
             <Card className="w-[350px]">
                 <CardHeader>
                     <CardTitle>Register to KriptoChat</CardTitle>
@@ -36,32 +46,39 @@ export function RegisterForm() {
                 <CardContent>
                     <div className="grid w-full items-center gap-4">
                         <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="Username">Username</Label>
-                            <Input id="Username" placeholder="Your username" />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="PublicKey">Public Key</Label>
+                            <Label htmlFor="username">Username</Label>
                             <Input
-                                id="PublicKey"
-                                placeholder="TODO: autogenerate public key"
+                                id="username"
+                                placeholder="Your username"
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="Password">Password</Label>
+                            <Label htmlFor="publicKey">Public Key</Label>
                             <Input
-                                id="Password"
+                                id="publicKey"
+                                placeholder="TODO: autogenerate public key"
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="password">Password</Label>
+                            <Input
+                                id="password"
                                 type="password"
                                 placeholder="Your password"
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="Confirm Password">
+                            <Label htmlFor="confirmPassword">
                                 Confirm Password
                             </Label>
                             <Input
-                                id="Confirm Password"
+                                id="confirmPassword"
                                 type="password"
                                 placeholder="Your password"
+                                onChange={handleChange}
                             />
                         </div>
                     </div>

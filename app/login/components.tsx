@@ -11,19 +11,29 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { login } from '@/use-case/mock/login'
-import { FormEventHandler } from 'react'
+import { ChangeEventHandler, FormEventHandler, useState } from 'react'
 
 export function LoginForm() {
-    const onSubmit: FormEventHandler = (e) => {
+    const [formData, setFormData] = useState({
+        username: '',
+        password: '',
+    })
+
+    const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const { id, value } = e.target
+        setFormData((prev) => ({
+            ...prev,
+            [id]: value,
+        }))
+    }
+
+    const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault()
-        login({
-            username: '',
-            password: '',
-        })
+        login(formData)
     }
 
     return (
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSubmit}>
             <Card className="w-[350px]">
                 <CardHeader>
                     <CardTitle>Login to KriptoChat</CardTitle>
@@ -34,15 +44,20 @@ export function LoginForm() {
                 <CardContent>
                     <div className="grid w-full items-center gap-4">
                         <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="Username">Username</Label>
-                            <Input id="Username" placeholder="Your username" />
+                            <Label htmlFor="username">Username</Label>
+                            <Input
+                                id="username"
+                                placeholder="Your username"
+                                onChange={handleChange}
+                            />
                         </div>
                         <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="Password">Password</Label>
+                            <Label htmlFor="password">Password</Label>
                             <Input
-                                id="Password"
+                                id="password"
                                 type="password"
                                 placeholder="Your password"
+                                onChange={handleChange}
                             />
                         </div>
                     </div>
