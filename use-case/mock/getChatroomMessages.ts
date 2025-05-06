@@ -15,7 +15,7 @@ export async function getChatroomMessages(
     return [
         {
             message: 'Hello 123',
-            senderUsername: 'my_username',
+            senderUsername: 'leon',
             timestamp: new Date(),
         },
         {
@@ -25,7 +25,67 @@ export async function getChatroomMessages(
         },
         {
             message: 'Hello 789',
-            senderUsername: 'my_username',
+            senderUsername: 'leon',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 123',
+            senderUsername: 'leon',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 456',
+            senderUsername: 'haziq',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 789',
+            senderUsername: 'leon',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 123',
+            senderUsername: 'haziq',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 456',
+            senderUsername: 'haziq',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 789',
+            senderUsername: 'haziq',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 123',
+            senderUsername: 'haziq',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 456',
+            senderUsername: 'haziq',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 789',
+            senderUsername: 'leon',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 123',
+            senderUsername: 'leon',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 456',
+            senderUsername: 'haziq',
+            timestamp: new Date(),
+        },
+        {
+            message: 'Hello 789',
+            senderUsername: 'leon',
             timestamp: new Date(),
         },
     ]
