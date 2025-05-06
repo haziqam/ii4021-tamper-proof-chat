@@ -21,7 +21,8 @@ export async function login(payload: LoginPayload) {
         .setExpirationTime('1d')
         .sign(secret)
 
-    ;(await cookies()).set({
+    const cookieStore = await cookies()
+    cookieStore.set({
         name: 'access-token',
         value: token,
         httpOnly: true,

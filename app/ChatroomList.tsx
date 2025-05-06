@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import {
     Sidebar,
     SidebarProvider,
@@ -13,6 +14,7 @@ import {
 } from '@/components/ui/sidebar'
 import { useChatStore } from '@/state-stores/chat-store'
 import { Chatroom } from '@/types/chat'
+import { logout } from '@/use-case/mock/logout'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -25,6 +27,11 @@ import { MouseEventHandler } from 'react'
 
 export function ChatroomList() {
     const chatrooms = useChatStore((state) => state.chatrooms)
+
+    const handleLogout: MouseEventHandler<HTMLButtonElement> = () => {
+        logout()
+    }
+
     return (
         <SidebarProvider>
             <Sidebar>
@@ -59,9 +66,14 @@ export function ChatroomList() {
                                     side="top"
                                     className="w-[calc(var(--sidebar-width)*0.9)] bg-gray-300 rounded-xl"
                                 >
-                                    <DropdownMenuItem className="flex gap-3 cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-400 focus-visible:outline-none">
-                                        <LogOut />
-                                        Log out
+                                    <DropdownMenuItem asChild>
+                                        <Button
+                                            className="w-full flex gap-3 cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-400 focus-visible:outline-none"
+                                            onClick={handleLogout}
+                                        >
+                                            <LogOut />
+                                            Log out
+                                        </Button>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
