@@ -9,9 +9,7 @@ export async function middleware(req: NextRequest) {
     const token = req.cookies.get('access-token')?.value
 
     if (!token) {
-        return NextResponse.redirect(
-            new URL('/login?error=unauthorized', req.url)
-        )
+        return NextResponse.redirect(new URL('/login', req.url))
     }
 
     try {
