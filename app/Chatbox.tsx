@@ -21,7 +21,7 @@ function ChatboxHeader() {
     const targetUsername = activeChatroom?.targetUsername
 
     return (
-        <div className="w-full bg-gray-300 p-4 font-extrabold flex gap-3 items-center">
+        <div className="w-full bg-gray-300 p-4 rounded-b-xl font-extrabold flex gap-3 items-center">
             <div className="rounded-full bg-gray-600 p-1">
                 <User />
             </div>
