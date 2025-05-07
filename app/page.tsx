@@ -1,7 +1,5 @@
-import { getChatroomList } from '@/use-case/mock/getChatroomList'
-import { MainLayout } from './MainLayout'
+import { redirect } from 'next/navigation'
 
-export default async function HomePage() {
-    const chatrooms = await getChatroomList()
-    return <MainLayout chatrooms={chatrooms} />
+export default function MainPage() {
+    redirect('/chat')
 }

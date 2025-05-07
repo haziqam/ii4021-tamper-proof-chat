@@ -1,10 +1,10 @@
 import { create } from 'zustand'
-import { Chatroom, ActiveChatroom, Message } from '@/types/chat'
+import { Chatroom, ChatroomDetail, Message } from '@/types/chat'
 import { getChatroomMessages } from '@/use-case/mock/getChatroomMessages'
 
 interface ChatState {
     chatrooms: Chatroom[]
-    activeChatroom: ActiveChatroom | null
+    activeChatroom: ChatroomDetail | null
 
     setChatrooms: (chatrooms: Chatroom[]) => void
     setActiveChatroom: (chatroomId: string) => void
@@ -24,7 +24,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
         if (!chatroom) return
 
-        const targetUsername = chatroom.targetUsername
+        const targetUsername = chatroom.chatroomName
 
         const messages = await getChatroomMessages({
             chatroomId: chatroom.chatroomId,
@@ -34,7 +34,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
             activeChatroom: {
                 chatroomId,
                 targetUsername,
-                messages,
+                lastMessages: messages,
             },
         })
     },
@@ -46,7 +46,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
             set((state) => ({
                 activeChatroom: {
                     ...state.activeChatroom!,
-                    messages: [...state.activeChatroom!.messages, message],
+                    lastMessages: [
+                        ...state.activeChatroom!.lastMessages,
+                        message,
+                    ],
                 },
             }))
         }
@@ -65,7 +68,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
             } else {
                 chatrooms.push({
                     chatroomId,
-                    targetUsername: message.senderUsername,
+                    chatroomName: message.senderUsername,
                     lastChat: message.message,
                 })
             }

@@ -1,6 +1,6 @@
 export type Chatroom = {
     chatroomId: string
-    targetUsername: string
+    chatroomName: string
     lastChat: string
 }
 
@@ -10,8 +10,14 @@ export type Message = {
     timestamp: Date
 }
 
-export type ActiveChatroom = {
+export type ChatroomDetail = {
     chatroomId: string
     targetUsername: string
-    messages: Message[]
+    members?: ChatroomMember[]
+    lastMessages: Message[]
+}
+
+export type ChatroomMember = {
+    username: string
+    publicKey: string
 }

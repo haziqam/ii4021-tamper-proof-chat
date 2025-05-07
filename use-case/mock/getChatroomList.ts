@@ -8,17 +8,17 @@ export async function getChatroomList(): Promise<Chatroom[]> {
     return [
         {
             chatroomId: '123',
-            targetUsername: 'leon',
+            chatroomName: 'leon',
             lastChat: 'Hello',
         },
         {
             chatroomId: '456',
-            targetUsername: 'abcde',
+            chatroomName: 'abcde',
             lastChat: 'Hello',
         },
         {
             chatroomId: '113',
-            targetUsername: 'efghi',
+            chatroomName: 'efghi',
             lastChat: 'Hello',
         },
     ]

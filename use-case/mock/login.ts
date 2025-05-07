@@ -31,5 +31,16 @@ export async function login(payload: LoginPayload) {
         maxAge: 60 * 60 * 24,
     })
 
+    const userInfo = {
+        userId: 'test12345',
+        username: 'haziq',
+    }
+
+    cookieStore.set('user-info', JSON.stringify(userInfo), {
+        httpOnly: false,
+        path: '/',
+        maxAge: 60 * 60 * 24,
+    })
+
     redirect('/')
 }
