@@ -18,6 +18,9 @@
 /.next/
 /out/
 
+# prisma
+generated/prisma/
+
 # production
 /build
 
