@@ -13,6 +13,7 @@ import {
     SidebarFooter,
     SidebarHeader,
 } from '@/components/ui/sidebar'
+import { useSyncedChatroomId } from '@/hooks/use-synced-chatroom-id'
 import { useChatStore } from '@/state-stores/chat-store'
 import { Chatroom } from '@/types/chat'
 import { logout } from '@/use-case/mock/logout'
@@ -24,7 +25,6 @@ import {
 } from '@radix-ui/react-dropdown-menu'
 
 import { ChevronUp, LogOut, User, User2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { MouseEventHandler } from 'react'
 
 export function ChatroomList() {
@@ -93,13 +93,11 @@ interface ChatroomItemProps {
 
 function ChatroomItem(props: ChatroomItemProps) {
     const { chatroom } = props
-    const activeChatroom = useChatStore((state) => state.activeChatroom)
-    const setActiveChatroom = useChatStore((state) => state.setActiveChatroom)
-    const isActive = chatroom.chatroomId == activeChatroom?.chatroomId
-    const router = useRouter()
+    const { chatroomId, setChatroomId } = useSyncedChatroomId()
+    const isActive = chatroom.chatroomId == chatroomId
 
-    const handleClick: MouseEventHandler<HTMLDivElement> = async () => {
-        router.push(`/chat2/${chatroom.chatroomId}`)
+    const handleClick: MouseEventHandler<HTMLDivElement> = () => {
+        setChatroomId(chatroom.chatroomId)
     }
 
     return (

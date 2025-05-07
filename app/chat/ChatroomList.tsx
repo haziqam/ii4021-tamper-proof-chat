@@ -24,6 +24,7 @@ import {
 } from '@radix-ui/react-dropdown-menu'
 
 import { ChevronUp, LogOut, User, User2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { MouseEventHandler } from 'react'
 
 export function ChatroomList() {
@@ -92,12 +93,16 @@ interface ChatroomItemProps {
 
 function ChatroomItem(props: ChatroomItemProps) {
     const { chatroom } = props
-    const activeChatroom = useChatStore((state) => state.activeChatroom)
-    const setActiveChatroom = useChatStore((state) => state.setActiveChatroom)
-    const isActive = chatroom.chatroomId == activeChatroom?.chatroomId
+    const router = useRouter()
+    const activeChatroom = useChatStore((s) => s.activeChatroom)
+    const setActiveChatroom = useChatStore((s) => s.setActiveChatroom)
+    const isActive = chatroom.chatroomId === activeChatroom?.chatroomId
 
-    const handleClick: MouseEventHandler<HTMLDivElement> = async () => {
+    const handleClick: MouseEventHandler<HTMLDivElement> = () => {
         setActiveChatroom(chatroom.chatroomId)
+        const url = new URL(window.location.href)
+        url.searchParams.set('chatroomId', chatroom.chatroomId)
+        router.push(url.toString())
     }
 
     return (
