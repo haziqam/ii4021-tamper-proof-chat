@@ -1,6 +1,7 @@
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Card } from '@/components/ui/card'
 import { useScrollBottom } from '@/hooks/use-scroll-bottom'
 import { useChatStore } from '@/state-stores/chat-store'
-import { User } from 'lucide-react'
 
 export function Chatbox() {
     const activeChatroom = useChatStore((state) => state.activeChatroom)
@@ -21,18 +22,19 @@ function ChatboxHeader() {
     const targetUsername = activeChatroom?.targetUsername
 
     return (
-        <div className="w-full bg-gray-300 p-4 rounded-b-xl font-extrabold flex gap-3 items-center">
-            <div className="rounded-full bg-gray-600 p-1">
-                <User />
-            </div>
+        <Card>
+            <Avatar className="w-10 h-10">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>User</AvatarFallback>
+            </Avatar>
             <div>{targetUsername}</div>
-        </div>
+        </Card>
     )
 }
 
 function ChatboxContent() {
     const activeChatroom = useChatStore((state) => state.activeChatroom)
-    const messages = activeChatroom?.messages ?? []
+    const messages = activeChatroom?.lastMessages ?? []
     const scrollRef = useScrollBottom(messages)
 
     return (

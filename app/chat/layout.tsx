@@ -1,4 +1,3 @@
-// /app/chat/layout.tsx
 import { ReactNode } from 'react'
 import { getChatroomList } from '@/use-case/mock/getChatroomList'
 import { ChatroomListWrapper } from './ChatroomListWrapper'

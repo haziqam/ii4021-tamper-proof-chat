@@ -11,7 +11,12 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { login } from '@/use-case/mock/login'
-import { ChangeEventHandler, FormEventHandler, useState } from 'react'
+import {
+    ChangeEventHandler,
+    FormEventHandler,
+    startTransition,
+    useState,
+} from 'react'
 
 export function LoginForm() {
     const [formData, setFormData] = useState({
@@ -29,7 +34,9 @@ export function LoginForm() {
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault()
-        login(formData)
+        startTransition(() => {
+            return login(formData)
+        })
     }
 
     return (
