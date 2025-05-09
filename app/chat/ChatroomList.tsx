@@ -13,6 +13,7 @@ import {
     SidebarMenuItem,
     SidebarFooter,
     SidebarHeader,
+    SIDEBAR_WIDTH,
 } from '@/components/ui/sidebar'
 import { useSyncedChatroomId } from '@/hooks/use-synced-chatroom-id'
 import { useUserInfo } from '@/hooks/user-info-store'
@@ -24,7 +25,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from '@radix-ui/react-dropdown-menu'
+} from '@/components/ui/dropdown-menu'
 
 import { ChevronUp, LogOut, MessageSquarePlus, User, User2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -36,17 +37,23 @@ export function ChatroomList() {
     const chatrooms = useChatStore((state) => state.chatrooms)
     const router = useRouter()
 
-    const handleLogout: MouseEventHandler<HTMLButtonElement> = () => {
+    const handleLogout: MouseEventHandler<HTMLDivElement> = () => {
         startTransition(() => {
             return logout()
         })
     }
 
-    const handleNewChat: MouseEventHandler<HTMLButtonElement> = () => {
+    const handleNewChat: MouseEventHandler<HTMLDivElement> = () => {
         router.push('/search')
     }
 
     const userInfo = useUserInfo()
+
+    const DROPDOWN_WIDTH_PERCENTAGE = 0.8
+    const DROPDOWN_WIDTH =
+        parseInt(SIDEBAR_WIDTH.replace('rem', ''), 10) *
+            DROPDOWN_WIDTH_PERCENTAGE +
+        'rem'
 
     return (
         <SidebarProvider>
@@ -81,25 +88,23 @@ export function ChatroomList() {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent
                                     side="top"
-                                    className="w-[calc(var(--sidebar-width)*0.9)] bg-primary rounded-xl"
+                                    className="bg-primary rounded-xl"
                                 >
-                                    <DropdownMenuItem asChild>
-                                        <Button
-                                            className="w-full flex gap-3 cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-400 focus-visible:outline-none"
-                                            onClick={handleNewChat}
-                                        >
-                                            <MessageSquarePlus />
-                                            New Chat
-                                        </Button>
+                                    <DropdownMenuItem
+                                        onClick={handleNewChat}
+                                        className={`text-gray-50 cursor-pointer gap-2`}
+                                        style={{ width: DROPDOWN_WIDTH }}
+                                    >
+                                        <MessageSquarePlus className="h-4 w-4" />
+                                        <span>New Chat</span>
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <Button
-                                            className="w-full flex gap-3 cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-400 focus-visible:outline-none"
-                                            onClick={handleLogout}
-                                        >
-                                            <LogOut />
-                                            Log out
-                                        </Button>
+                                    <DropdownMenuItem
+                                        onClick={handleLogout}
+                                        className={`text-gray-50 cursor-pointer gap-2`}
+                                        style={{ width: DROPDOWN_WIDTH }}
+                                    >
+                                        <LogOut className="h-4 w-4" />
+                                        <span>Log out</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

@@ -2,6 +2,16 @@ import { useScrollBottom } from '@/hooks/use-scroll-bottom'
 import { useChatStore } from '@/state-stores/chat-store'
 import { useUserInfo } from '@/hooks/user-info-store'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Send } from 'lucide-react'
+import {
+    ChangeEventHandler,
+    KeyboardEventHandler,
+    MouseEventHandler,
+    useState,
+} from 'react'
 
 export function Chatbox() {
     const activeChatroom = useChatStore((state) => state.activeChatroom)
@@ -22,13 +32,15 @@ function ChatboxHeader() {
     const targetUsername = activeChatroom?.targetUsername
 
     return (
-        <div className="w-full bg-gray-300 px-4 py-2 rounded-b-xl font-extrabold flex gap-3 items-center">
-            <Avatar className="w-10 h-10">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>User</AvatarFallback>
-            </Avatar>
-            <div>{targetUsername}</div>
-        </div>
+        <Card className="bg-gray-300 px-4 py-2 rounded-b-xl rounded-t-none font-extrabold">
+            <div className="w-full flex gap-3 items-center">
+                <Avatar className="w-10 h-10">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>User</AvatarFallback>
+                </Avatar>
+                <div>{targetUsername}</div>
+            </div>
+        </Card>
     )
 }
 
@@ -50,7 +62,7 @@ function ChatboxContent() {
                             ? 'justify-end'
                             : 'justify-start'
                     }`}
-                    key={idx}
+                    key={`${'messages' + msg.timestamp + '-' + idx}`}
                 >
                     <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
                         <div className="text-sm font-semibold">
@@ -65,13 +77,37 @@ function ChatboxContent() {
 }
 
 function ChatboxInputText() {
+    const [messageInput, setMessageInput] = useState('')
+
+    const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setMessageInput(e.target.value)
+    }
+
+    const handleSend = () => {
+        if (!messageInput.trim()) return
+        console.log(`Sending message: ${messageInput}`)
+        setMessageInput('')
+    }
+
+    const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+        if (e.key === 'Enter') {
+            handleSend()
+        }
+    }
+
     return (
-        <div className="bg-gray-300 p-4">
-            <input
+        <div className="flex items-center space-x-2 p-4">
+            <Input
+                className="flex-1"
                 type="text"
                 placeholder="Type a message..."
-                className="w-full px-4 py-2 rounded-lg bg-gray-100 focus:outline-none"
+                value={messageInput}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
             />
+            <Button onClick={handleSend}>
+                <Send />
+            </Button>
         </div>
     )
 }

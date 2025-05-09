@@ -14,11 +14,20 @@ export const useUserStore = create<UsersState>((set, get) => ({
         set({ users })
     },
     searchUserByUsername: async (username) => {
-        const user = await findUserByUsername({ username })
+        let user =
+            get().users.find((user) => user.username === username) ?? null
+
         if (user) {
             set({ users: [user] })
-        } else {
-            set({ users: [] })
+            return
         }
+
+        user = await findUserByUsername({ username })
+        if (user) {
+            set({ users: [user] })
+            return
+        }
+
+        set({ users: [] })
     },
 }))
