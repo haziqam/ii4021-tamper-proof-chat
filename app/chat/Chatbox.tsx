@@ -32,13 +32,13 @@ function ChatboxHeader() {
     const targetUsername = activeChatroom?.targetUsername
 
     return (
-        <Card className="bg-gray-300 px-4 py-2 rounded-b-xl rounded-t-none font-extrabold">
-            <div className="w-full flex gap-3 items-center">
-                <Avatar className="w-10 h-10">
+        <Card className="bg-gray-300 px-5 py-4 rounded-b-xl rounded-t-none ">
+            <div className="w-full flex gap-5 items-center">
+                <Avatar className="w-15 h-15">
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>User</AvatarFallback>
                 </Avatar>
-                <div>{targetUsername}</div>
+                <div className="font-extrabold text-2xl">{targetUsername}</div>
             </div>
         </Card>
     )

@@ -6,6 +6,7 @@ import { User } from '@/types/user'
 import { useUserStore } from '@/state-stores/user-store'
 import {
     ChangeEventHandler,
+    KeyboardEventHandler,
     MouseEventHandler,
     useEffect,
     useState,
@@ -30,8 +31,14 @@ export function UserSearchWrapper(props: UserSearchWrapperProps) {
         setUsernameInput(e.target.value)
     }
 
-    const handleSearch: MouseEventHandler<HTMLButtonElement> = () => {
+    const handleSearch = () => {
         searchUserByUsername(usernameInput)
+    }
+
+    const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch()
+        }
     }
 
     return (
@@ -41,6 +48,7 @@ export function UserSearchWrapper(props: UserSearchWrapperProps) {
                     placeholder="Find a user"
                     value={usernameInput}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
                 />
                 <Button onClick={handleSearch}>
                     <Search />

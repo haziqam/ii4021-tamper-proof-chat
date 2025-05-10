@@ -80,7 +80,7 @@ export function ChatroomList() {
                         <SidebarMenuItem>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <SidebarMenuButton className="px-2 py-2">
+                                    <SidebarMenuButton className="py-5">
                                         <User2 />{' '}
                                         {userInfo?.username ?? 'Username'}
                                         <ChevronUp className="ml-auto" />
@@ -92,19 +92,23 @@ export function ChatroomList() {
                                 >
                                     <DropdownMenuItem
                                         onClick={handleNewChat}
-                                        className={`text-gray-50 cursor-pointer gap-2`}
+                                        className="text-gray-50 cursor-pointer gap-4 text-xl flex px-6 py-3"
                                         style={{ width: DROPDOWN_WIDTH }}
                                     >
-                                        <MessageSquarePlus className="h-4 w-4" />
-                                        <span>New Chat</span>
+                                        <MessageSquarePlus
+                                            style={{ transform: 'scale(1.5)' }}
+                                        />
+                                        <div>New Chat</div>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         onClick={handleLogout}
-                                        className={`text-gray-50 cursor-pointer gap-2`}
+                                        className="text-gray-50 cursor-pointer gap-4 text-xl flex px-6 py-3"
                                         style={{ width: DROPDOWN_WIDTH }}
                                     >
-                                        <LogOut className="h-4 w-4" />
-                                        <span>Log out</span>
+                                        <LogOut
+                                            style={{ transform: 'scale(1.5)' }}
+                                        />
+                                        <div>Log out</div>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -135,13 +139,15 @@ function ChatroomItem(props: ChatroomItemProps) {
             onClick={handleClick}
         >
             <div className="flex gap-3 px-3">
-                <Avatar className="w-10 h-10">
+                <Avatar className="w-12 h-12">
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>User</AvatarFallback>
                 </Avatar>
                 <div>
-                    <div className="font-bold">{chatroom.chatroomName}</div>
-                    <div className="text-xs">{chatroom.lastChat}</div>
+                    <div className="font-extrabold text-xl">
+                        {chatroom.chatroomName}
+                    </div>
+                    <div>{chatroom.lastChat}</div>
                 </div>
             </div>
         </Card>
