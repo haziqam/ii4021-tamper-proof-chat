@@ -35,7 +35,5 @@ export async function findUsers(
         users,
     }
 
-    console.log(result)
-
     return result
 }
