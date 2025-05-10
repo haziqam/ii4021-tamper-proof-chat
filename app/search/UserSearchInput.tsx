@@ -5,6 +5,7 @@ import { useUserStore } from '@/state-stores/user-store'
 import { ChangeEventHandler, KeyboardEventHandler, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Search } from 'lucide-react'
+import { DEFAULT_USERS_PER_PAGE } from './constants'
 
 export function UserSearchInput() {
     const [usernameInput, setUsernameInput] = useState('')
@@ -19,7 +20,7 @@ export function UserSearchInput() {
         if (trimmed !== '') {
             searchUserByUsername(trimmed)
         } else {
-            searchUsers(1, 10)
+            searchUsers(1, DEFAULT_USERS_PER_PAGE)
         }
     }
 

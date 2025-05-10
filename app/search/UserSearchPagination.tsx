@@ -10,32 +10,17 @@ import {
     PaginationPrevious,
 } from '@/components/ui/pagination'
 import { useUserStore } from '@/state-stores/user-store'
-import { USERS_PER_PAGE } from './constants'
+import { DEFAULT_USERS_PER_PAGE } from './constants'
+import { useCallback } from 'react'
 
 export function UserSearchPagination() {
-    const { page: activePage, totalPage, searchUsers } = useUserStore()
-
-    const handlePageChange = (page: number) => {
-        searchUsers(page, USERS_PER_PAGE)
-    }
-
-    const handleClick = (page: number) => {
-        handlePageChange(page)
-    }
-
-    const handlePrevious = () => {
-        if (activePage > 1) {
-            handlePageChange(activePage - 1)
-        }
-    }
-
-    const handleNext = () => {
-        if (activePage < totalPage) {
-            handlePageChange(activePage + 1)
-        }
-    }
-
-    const getPageNumbers = () => {
+    const {
+        page: activePage,
+        totalPage,
+        searchUsers,
+        usersPerPage,
+    } = useUserStore()
+    const getPageNumbers = useCallback(() => {
         const pageNumbers = []
 
         // Always show first page
@@ -68,6 +53,26 @@ export function UserSearchPagination() {
         }
 
         return pageNumbers
+    }, [activePage, totalPage, usersPerPage])
+
+    const handlePageChange = (page: number) => {
+        searchUsers(page, DEFAULT_USERS_PER_PAGE)
+    }
+
+    const handleClick = (page: number) => {
+        handlePageChange(page)
+    }
+
+    const handlePrevious = () => {
+        if (activePage > 1) {
+            handlePageChange(activePage - 1)
+        }
+    }
+
+    const handleNext = () => {
+        if (activePage < totalPage) {
+            handlePageChange(activePage + 1)
+        }
     }
 
     return (

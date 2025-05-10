@@ -36,7 +36,7 @@ export const useUserStore = create<UsersState>((set, get) => ({
             get().users.find((user) => user.username === username) ?? null
 
         if (user) {
-            set({ users: [user] })
+            set({ users: [user], page: 1, usersPerPage: 1, totalPage: 1 })
             return
         }
 

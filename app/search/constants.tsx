@@ -1,1 +1,1 @@
-export const USERS_PER_PAGE = 9
+export const DEFAULT_USERS_PER_PAGE = 9
