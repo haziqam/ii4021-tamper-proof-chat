@@ -5,6 +5,7 @@ import { simulateLatency } from './utils'
 
 interface GetChatroomMessagesPayload {
     chatroomId: string
+    page: number
 }
 
 export async function getChatroomMessages(
@@ -56,36 +57,6 @@ export async function getChatroomMessages(
         {
             message: 'Hello 789',
             senderUsername: 'haziq',
-            timestamp: new Date(),
-        },
-        {
-            message: 'Hello 123',
-            senderUsername: 'haziq',
-            timestamp: new Date(),
-        },
-        {
-            message: 'Hello 456',
-            senderUsername: 'haziq',
-            timestamp: new Date(),
-        },
-        {
-            message: 'Hello 789',
-            senderUsername: 'leon',
-            timestamp: new Date(),
-        },
-        {
-            message: 'Hello 123',
-            senderUsername: 'leon',
-            timestamp: new Date(),
-        },
-        {
-            message: 'Hello 456',
-            senderUsername: 'haziq',
-            timestamp: new Date(),
-        },
-        {
-            message: 'Hello 789',
-            senderUsername: 'leon',
             timestamp: new Date(),
         },
     ]

@@ -146,7 +146,7 @@ function ChatroomItem(props: ChatroomItemProps) {
                     <div className="font-bold text-xl">
                         {chatroom.chatroomName}
                     </div>
-                    <div>{chatroom.lastChat}</div>
+                    <div>{chatroom.lastMessage.message}</div>
                 </div>
             </div>
         </Card>

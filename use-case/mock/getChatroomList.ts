@@ -9,17 +9,29 @@ export async function getChatroomList(): Promise<Chatroom[]> {
         {
             chatroomId: '123',
             chatroomName: 'leon',
-            lastChat: 'Hello',
+            lastMessage: {
+                message: 'Hello 789',
+                senderUsername: 'leon',
+                timestamp: new Date(),
+            },
         },
         {
             chatroomId: '456',
             chatroomName: 'abcde',
-            lastChat: 'Hello',
+            lastMessage: {
+                message: 'Hello 789',
+                senderUsername: 'leon',
+                timestamp: new Date(),
+            },
         },
         {
             chatroomId: '113',
             chatroomName: 'efghi',
-            lastChat: 'Hello',
+            lastMessage: {
+                message: 'Hello 789',
+                senderUsername: 'leon',
+                timestamp: new Date(),
+            },
         },
     ]
 }

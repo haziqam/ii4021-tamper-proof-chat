@@ -1,7 +1,7 @@
 export type Chatroom = {
     chatroomId: string
     chatroomName: string
-    lastChat: string
+    lastMessage: Message
 }
 
 export type Message = {
@@ -12,9 +12,11 @@ export type Message = {
 
 export type ChatroomDetail = {
     chatroomId: string
-    targetUsername: string
-    members?: ChatroomMember[]
+    chatroomName: string
+    members: ChatroomMember[]
     lastMessages: Message[]
+    currentPage: number
+    oldestLoadedPage?: number
 }
 
 export type ChatroomMember = {

@@ -31,7 +31,7 @@ export function Chatbox() {
 
 function ChatboxHeader() {
     const activeChatroom = useChatStore((state) => state.activeChatroom)
-    const targetUsername = activeChatroom?.targetUsername
+    const targetUsername = activeChatroom?.chatroomName
 
     return (
         <Card className="bg-gray-300 px-5 py-4 rounded-b-xl rounded-t-none ">
@@ -79,15 +79,28 @@ function ChatboxContent() {
 }
 
 function ChatboxInputText() {
+    const addNewMessages = useChatStore((state) => state.addNewMessages)
+    const activeChatroomId = useChatStore(
+        (state) => state.activeChatroom
+    )?.chatroomId
     const [messageInput, setMessageInput] = useState('')
+    const userInfo = useUserInfo()
 
     const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setMessageInput(e.target.value)
     }
 
-    const handleSend = () => {
-        if (messageInput.trim() === '') return
-        console.log(`Sending message: ${messageInput}`)
+    const handleSend = async () => {
+        if (!userInfo || !activeChatroomId) return
+        const trimmed = messageInput.trim()
+        if (trimmed === '') return
+        await addNewMessages(activeChatroomId, [
+            {
+                message: trimmed,
+                senderUsername: userInfo.username,
+                timestamp: new Date(),
+            },
+        ])
         setMessageInput('')
     }
 
