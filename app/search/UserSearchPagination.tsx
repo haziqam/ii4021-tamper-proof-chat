@@ -10,10 +10,10 @@ import {
     PaginationPrevious,
 } from '@/components/ui/pagination'
 import { useUserStore } from '@/state-stores/user-store'
+import { USERS_PER_PAGE } from './constants'
 
 export function UserSearchPagination() {
     const { page: activePage, totalPage, searchUsers } = useUserStore()
-    const USERS_PER_PAGE = 9
 
     const handlePageChange = (page: number) => {
         searchUsers(page, USERS_PER_PAGE)
