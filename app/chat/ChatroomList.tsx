@@ -1,5 +1,4 @@
 'use client'
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import {
     Sidebar,
@@ -138,13 +137,13 @@ function ChatroomItem(props: ChatroomItemProps) {
             className={`${isActive ? 'bg-gray-400' : 'bg-gray-300'} hover:bg-gray-400 rounded-xl cursor-pointer py-3`}
             onClick={handleClick}
         >
-            <div className="flex gap-3 px-3">
+            <div className="flex gap-3 px-3 items-center">
                 <Avatar className="w-12 h-12">
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>User</AvatarFallback>
                 </Avatar>
                 <div>
-                    <div className="font-extrabold text-xl">
+                    <div className="font-bold text-xl">
                         {chatroom.chatroomName}
                     </div>
                     <div>{chatroom.lastChat}</div>

@@ -1,14 +1,16 @@
+'use client'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { useUserStore } from '@/state-stores/user-store'
 import { User } from '@/types/user'
 import { MouseEventHandler } from 'react'
 
-export function UserList() {
+export function UserSearchList() {
     const users = useUserStore((state) => state.users)
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-2 h-183 overflow-y-auto">
             {users.map((user, idx) => (
                 <UserListItem
                     user={user}
@@ -36,12 +38,12 @@ function UserListItem(props: UserListItemProps) {
             onClick={handleClick}
         >
             <div className="flex gap-3 px-3 items-center">
-                <Avatar className="w-10 h-10">
+                <Avatar className="w-12 h-12">
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>User</AvatarFallback>
                 </Avatar>
                 <div>
-                    <div className="font-bold">{user.username}</div>
+                    <div className="font-bold text-xl">{user.username}</div>
                 </div>
             </div>
         </Card>

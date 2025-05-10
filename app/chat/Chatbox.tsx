@@ -1,3 +1,5 @@
+'use client'
+
 import { useScrollBottom } from '@/hooks/use-scroll-bottom'
 import { useChatStore } from '@/state-stores/chat-store'
 import { useUserInfo } from '@/hooks/user-info-store'
@@ -84,7 +86,7 @@ function ChatboxInputText() {
     }
 
     const handleSend = () => {
-        if (!messageInput.trim()) return
+        if (messageInput.trim() === '') return
         console.log(`Sending message: ${messageInput}`)
         setMessageInput('')
     }
