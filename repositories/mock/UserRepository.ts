@@ -6,7 +6,9 @@ import { v4 as uuidv4 } from 'uuid'
 import { ChatroomModel } from '@/models/Chatroom'
 
 export class UserRepository implements IUserRepository {
-    create(user: Omit<UserModel, 'id' | 'chatroomIds'>): UserModel {
+    async create(
+        user: Omit<UserModel, 'id' | 'chatroomIds'>
+    ): Promise<UserModel> {
         const newUser: UserModel = {
             ...user,
             id: uuidv4(),
@@ -16,11 +18,11 @@ export class UserRepository implements IUserRepository {
         return newUser
     }
 
-    getById(id: string): UserModel | null {
+    async getById(id: string): Promise<UserModel | null> {
         return dummyDb.users.find((u) => u.id === id) || null
     }
 
-    getByUsername(username: string): UserModel {
+    async getByUsername(username: string): Promise<UserModel> {
         const user = dummyDb.users.find((u) => u.username === username)
         if (!user) throw new Error('User not found')
         return user
@@ -30,7 +32,7 @@ export class UserRepository implements IUserRepository {
         user: UserModel
         chatrooms: ChatroomModel[]
     }> {
-        const user = this.getById(id)
+        const user = await this.getById(id)
         if (!user) throw new Error('User not found')
 
         const userChatrooms = dummyDb.chatrooms.filter((c) =>

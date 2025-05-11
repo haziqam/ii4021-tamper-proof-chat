@@ -4,7 +4,10 @@ import { MessageModel } from '@/models/Message'
 import { IMessageRepository } from '../IMessageRepository'
 
 export class MessageRepository implements IMessageRepository {
-    getMessages(chatroomId: string, chunkSequence: number): MessageModel[] {
+    async getMessages(
+        chatroomId: string,
+        chunkSequence: number
+    ): Promise<MessageModel[]> {
         const chunk = dummyDb.messageChunks.find(
             (c) =>
                 c.chatroomId === chatroomId && c.chunkSequence === chunkSequence
@@ -12,10 +15,10 @@ export class MessageRepository implements IMessageRepository {
         return chunk?.messages || []
     }
 
-    addMessage(
+    async addMessage(
         chatroomId: string,
         message: Omit<MessageModel, 'id'>
-    ): MessageModel {
+    ): Promise<MessageModel> {
         let lastChunk = dummyDb.messageChunks
             .filter((c) => c.chatroomId === chatroomId)
             .sort((a, b) => b.chunkSequence - a.chunkSequence)[0]

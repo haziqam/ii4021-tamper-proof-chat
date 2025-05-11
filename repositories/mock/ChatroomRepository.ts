@@ -5,7 +5,9 @@ import { IChatroomRepository } from '../IChatroomRepository'
 import { MessageChunkModel } from '@/models/Message'
 
 export class ChatroomRepository implements IChatroomRepository {
-    create(chatroom: Omit<ChatroomModel, 'id' | 'createdAt'>): ChatroomModel {
+    async create(
+        chatroom: Omit<ChatroomModel, 'id' | 'createdAt'>
+    ): Promise<ChatroomModel> {
         const newChatroom: ChatroomModel = {
             ...chatroom,
             id: uuidv4(),
