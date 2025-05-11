@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { login } from '@/use-case/mock/login'
+import { login } from '@/use-cases/mock/login'
 import {
     ChangeEventHandler,
     FormEventHandler,

@@ -1,7 +1,7 @@
 import { ec as EC } from 'elliptic'
 import { Message } from '@/types/chat'
-import { signMessage } from '@/use-case/signMessage'
-import { verifySignedMessage } from '@/use-case/verifyMessage'
+import { signMessage } from '@/use-cases/signMessage'
+import { verifySignedMessage } from '@/use-cases/verifyMessage'
 
 const ec = new EC('secp256k1')
 

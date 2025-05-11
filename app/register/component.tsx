@@ -11,7 +11,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ChangeEventHandler, FormEventHandler, useState } from 'react'
-import { register } from '@/use-case/mock/register'
+import { register } from '@/use-cases/mock/register'
 
 export function RegisterForm() {
     const [formData, setFormData] = useState({

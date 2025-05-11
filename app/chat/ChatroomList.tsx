@@ -18,7 +18,7 @@ import { useSyncedChatroomId } from '@/hooks/use-synced-chatroom-id'
 import { useUserInfo } from '@/hooks/user-info-store'
 import { useChatStore } from '@/state-stores/chat-store'
 import { Chatroom } from '@/types/chat'
-import { logout } from '@/use-case/mock/logout'
+import { logout } from '@/use-cases/mock/logout'
 import {
     DropdownMenu,
     DropdownMenuContent,
