@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { simulateLatency } from './utils'
 import { SignJWT } from 'jose'
+import { userRepository } from './dependencies/repositories'
 
 interface LoginPayload {
     username: string
@@ -15,13 +16,21 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 export async function login(payload: LoginPayload) {
     await simulateLatency()
 
-    const token = await new SignJWT({ userId: 'abc123' })
+    const user = await userRepository.getByUsername(payload.username)
+
+    // TODO: check with hash + salt in the real implementation and throw/return error if not match
+    if (user.password !== payload.password) {
+        return
+    }
+
+    const cookieStore = await cookies()
+
+    const token = await new SignJWT({ userId: user.id })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setExpirationTime('1d')
         .sign(secret)
 
-    const cookieStore = await cookies()
     cookieStore.set({
         name: 'access-token',
         value: token,
@@ -32,8 +41,9 @@ export async function login(payload: LoginPayload) {
     })
 
     const userInfo = {
-        userId: 'test12345',
-        username: 'haziq',
+        userId: user.id,
+        username: user.username,
+        publicKey: user.publicKey,
     }
 
     cookieStore.set('user-info', JSON.stringify(userInfo), {
