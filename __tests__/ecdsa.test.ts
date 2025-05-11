@@ -14,7 +14,7 @@ describe('ECDSA signing and verification', () => {
         senderUsername: 'alice',
         receiverUsername: 'bob',
         message: 'Hello Bob!',
-        timestamp: new Date(),
+        sentAt: new Date(),
     }
 
     it('signs and verifies a message', () => {

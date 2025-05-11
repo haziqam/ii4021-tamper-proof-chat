@@ -59,7 +59,7 @@ function ChatboxContent() {
                             ? 'justify-end'
                             : 'justify-start'
                     }`}
-                    key={`${'messages' + msg.timestamp + '-' + idx}`}
+                    key={`${'messages' + msg.sentAt + '-' + idx}`}
                 >
                     <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
                         <div className="text-sm font-semibold">
@@ -75,9 +75,9 @@ function ChatboxContent() {
 
 function ChatboxInputText() {
     const addNewMessages = useChatStore((state) => state.addNewMessages)
-    const activeChatroomId = useChatStore(
-        (state) => state.activeChatroom
-    )?.chatroomId
+
+    const activeChatroom = useChatStore((state) => state.activeChatroom)
+    const activeChatroomId = activeChatroom?.chatroomId
     const [messageInput, setMessageInput] = useState('')
     const userInfo = useUserInfo()
 
@@ -93,7 +93,10 @@ function ChatboxInputText() {
             {
                 message: trimmed,
                 senderUsername: userInfo.username,
-                timestamp: new Date(),
+                receiverUsername: activeChatroom.members.find(
+                    (m) => m.username !== userInfo.username
+                )?.username!,
+                sentAt: new Date(),
             },
         ])
         setMessageInput('')

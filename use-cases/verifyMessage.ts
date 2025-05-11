@@ -7,8 +7,8 @@ import { hashMessage } from './signMessage'
 const ec = new EC('secp256k1')
 
 function extractMessage(signed: SignedMessage): Message {
-    const { senderUsername, receiverUsername, message, timestamp } = signed
-    return { senderUsername, receiverUsername, message, timestamp }
+    const { senderUsername, receiverUsername, message, sentAt } = signed
+    return { senderUsername, receiverUsername, message, sentAt }
 }
 
 export function verifySignedMessage(

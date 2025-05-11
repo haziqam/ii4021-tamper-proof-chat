@@ -12,7 +12,8 @@ export async function getChatroomList(): Promise<Chatroom[]> {
             lastMessage: {
                 message: 'Hello 789',
                 senderUsername: 'leon',
-                timestamp: new Date(),
+                receiverUsername: 'haziq',
+                sentAt: new Date(),
             },
         },
         {
@@ -21,7 +22,8 @@ export async function getChatroomList(): Promise<Chatroom[]> {
             lastMessage: {
                 message: 'Hello 789',
                 senderUsername: 'leon',
-                timestamp: new Date(),
+                receiverUsername: 'haziq',
+                sentAt: new Date(),
             },
         },
         {
@@ -30,7 +32,8 @@ export async function getChatroomList(): Promise<Chatroom[]> {
             lastMessage: {
                 message: 'Hello 789',
                 senderUsername: 'leon',
-                timestamp: new Date(),
+                receiverUsername: 'haziq',
+                sentAt: new Date(),
             },
         },
     ]

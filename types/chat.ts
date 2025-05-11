@@ -1,3 +1,5 @@
+import { ECSignature } from './crypto'
+
 export type Chatroom = {
     chatroomId: string
     chatroomName: string
@@ -8,15 +10,12 @@ export type Message = {
     senderUsername: string
     receiverUsername: string
     message: string
-    timestamp: Date
+    sentAt: Date
 }
 
 export type SignedMessage = Message & {
     messageHash: string
-    signature: {
-        r: string
-        s: string
-    }
+    signature: ECSignature
 }
 
 export type ChatroomDetail = {

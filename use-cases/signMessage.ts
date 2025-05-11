@@ -9,7 +9,7 @@ const ec = new EC('secp256k1')
 export function hashMessage(message: Message): string {
     const canonicalMessage = {
         ...message,
-        timestamp: message.timestamp.toISOString(),
+        sentAt: message.sentAt.toISOString(),
     }
     const msgString = JSON.stringify(canonicalMessage)
     return sha3_256(msgString)

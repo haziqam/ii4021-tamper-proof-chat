@@ -76,7 +76,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
         const olderMessage = await getChatroomMessages({
             chatroomId: activeChatroom.chatroomId,
-            page: page,
+            chunkSequence: page,
         })
 
         activeChatroom.lastMessages.push(...olderMessage)
