@@ -8,12 +8,7 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
-import {
-    ChangeEventHandler,
-    KeyboardEventHandler,
-    MouseEventHandler,
-    useState,
-} from 'react'
+import { ChangeEventHandler, KeyboardEventHandler, useState } from 'react'
 
 export function Chatbox() {
     const activeChatroom = useChatStore((state) => state.activeChatroom)

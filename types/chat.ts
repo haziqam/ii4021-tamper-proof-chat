@@ -6,8 +6,17 @@ export type Chatroom = {
 
 export type Message = {
     senderUsername: string
+    receiverUsername: string
     message: string
     timestamp: Date
+}
+
+export type SignedMessage = Message & {
+    messageHash: string
+    signature: {
+        r: string
+        s: string
+    }
 }
 
 export type ChatroomDetail = {
