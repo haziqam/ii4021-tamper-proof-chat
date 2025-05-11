@@ -12,11 +12,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ChangeEventHandler, FormEventHandler, useState } from 'react'
 import { register } from '@/use-cases/mock/register'
+import { generateKeyPair } from '@/use-cases/generateKeyPair'
 
 export function RegisterForm() {
     const [formData, setFormData] = useState({
         username: '',
-        publicKey: '',
         password: '',
         confirmPassword: '',
     })
@@ -31,7 +31,8 @@ export function RegisterForm() {
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault()
-        register(formData)
+        const keyPair = generateKeyPair()
+        register({ ...formData, publicKey: keyPair.publicKey })
     }
 
     return (
@@ -50,14 +51,6 @@ export function RegisterForm() {
                             <Input
                                 id="username"
                                 placeholder="Your username"
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="publicKey">Public Key</Label>
-                            <Input
-                                id="publicKey"
-                                placeholder="TODO: autogenerate public key"
                                 onChange={handleChange}
                             />
                         </div>

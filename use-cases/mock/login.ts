@@ -18,8 +18,15 @@ export async function login(payload: LoginPayload) {
 
     const user = await userRepository.getByUsername(payload.username)
 
+    // TODO: handle error in real implementation
+    if (!user) {
+        console.log('User not found')
+        return
+    }
+
     // TODO: check with hash + salt in the real implementation and throw/return error if not match
     if (user.password !== payload.password) {
+        console.log('Passwords not match')
         return
     }
 
