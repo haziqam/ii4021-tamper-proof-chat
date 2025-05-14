@@ -27,18 +27,15 @@ export class UserRepository implements IUserRepository {
         return user
     }
 
-    async getWithChatrooms(id: string): Promise<{
-        user: UserModel
-        chatrooms: ChatroomModel[]
-    } | null> {
+    async listUserChatrooms(id: string): Promise<ChatroomModel[]> {
         const user = await this.getById(id)
-        if (!user) return null
+        if (!user) return []
 
         const userChatrooms = dummyDb.chatrooms.filter((c) =>
             user.chatroomIds.includes(c.id)
         )
 
-        return { user, chatrooms: userChatrooms }
+        return userChatrooms
     }
 
     async list(page: number, size: number): Promise<UserModel[]> {

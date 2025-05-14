@@ -13,8 +13,8 @@ beforeEach(() => {
 describe('UserRepository', () => {
     const userRepo = new UserRepository()
 
-    test('create user', () => {
-        const user = userRepo.create({
+    test('create user', async () => {
+        const user = await userRepo.create({
             username: 'alice',
             password: 'hash1',
             publicKey: 'pubkey1',
@@ -25,12 +25,12 @@ describe('UserRepository', () => {
         expect(dummyDb.users[0].username).toBe('alice')
     })
 
-    test('getById returns null for non-existent user', () => {
-        expect(userRepo.getById('nonexistent')).toBeNull()
+    test('getById returns null for non-existent user', async () => {
+        expect(await userRepo.getById('nonexistent')).toBeNull()
     })
 
-    test('getByUsername throws for non-existent user', () => {
-        expect(() => userRepo.getByUsername('nonexistent')).toThrow()
+    test('getByUsername returns null for non-existent user', async () => {
+        expect(await userRepo.getByUsername('nonexistent')).toBeNull()
     })
 
     test('list users with pagination', async () => {
@@ -57,14 +57,14 @@ describe('ChatroomRepository', () => {
     const chatroomRepo = new ChatroomRepository()
     const userRepo = new UserRepository()
 
-    test('create chatroom', () => {
-        const user = userRepo.create({
+    test('create chatroom', async () => {
+        const user = await userRepo.create({
             username: 'alice',
             password: 'hash1',
             publicKey: 'pubkey1',
         })
 
-        const chatroom = chatroomRepo.create({
+        const chatroom = await chatroomRepo.create({
             members: [{ username: user.username, publicKey: user.publicKey }],
         })
 
@@ -79,8 +79,8 @@ describe('ChatroomRepository', () => {
         expect(dummyDb.messageChunks[0].chunkSequence).toBe(1)
     })
 
-    test('getLastChunk returns correct chunk', () => {
-        const chatroom = chatroomRepo.create({
+    test('getLastChunk returns correct chunk', async () => {
+        const chatroom = await chatroomRepo.create({
             members: [{ username: 'alice', publicKey: 'pubkey1' }],
         })
 
@@ -95,18 +95,18 @@ describe('MessageRepository', () => {
     const chatroomRepo = new ChatroomRepository()
     const userRepo = new UserRepository()
 
-    test('add message creates initial chunk', () => {
-        const user = userRepo.create({
+    test('add message creates initial chunk', async () => {
+        const user = await userRepo.create({
             username: 'alice',
             password: 'hash1',
             publicKey: 'pubkey1',
         })
 
-        const chatroom = chatroomRepo.create({
+        const chatroom = await chatroomRepo.create({
             members: [{ username: user.username, publicKey: user.publicKey }],
         })
 
-        const message = messageRepo.addMessage(chatroom.id, {
+        const message = await messageRepo.addMessage(chatroom.id, {
             senderUsername: 'alice',
             receiverUsername: 'bob',
             message: 'Hello!',
@@ -126,14 +126,14 @@ describe('MessageRepository', () => {
         expect(dummyDb.chatrooms[0].lastMessage?.message).toBe('Hello!')
     })
 
-    test('messages are chunked correctly', () => {
-        const chatroom = chatroomRepo.create({
+    test('messages are chunked correctly', async () => {
+        const chatroom = await chatroomRepo.create({
             members: [{ username: 'alice', publicKey: 'pubkey1' }],
         })
 
         // Add exactly CHUNK_SIZE messages
         for (let i = 0; i < dummyDb.CHUNK_SIZE; i++) {
-            messageRepo.addMessage(chatroom.id, {
+            await messageRepo.addMessage(chatroom.id, {
                 senderUsername: 'alice',
                 receiverUsername: 'bob',
                 message: `Message ${i}`,
@@ -165,14 +165,14 @@ describe('MessageRepository', () => {
         expect(dummyDb.messageChunks[1].chunkSequence).toBe(2)
     })
 
-    test('getMessages returns correct chunk', () => {
-        const chatroom = chatroomRepo.create({
+    test('getMessages returns correct chunk', async () => {
+        const chatroom = await chatroomRepo.create({
             members: [{ username: 'alice', publicKey: 'pubkey1' }],
         })
 
         // Add messages to two different chunks
         for (let i = 0; i < dummyDb.CHUNK_SIZE + 1; i++) {
-            messageRepo.addMessage(chatroom.id, {
+            await messageRepo.addMessage(chatroom.id, {
                 senderUsername: 'alice',
                 receiverUsername: 'bob',
                 message: `Message ${i}`,
@@ -182,10 +182,10 @@ describe('MessageRepository', () => {
             })
         }
 
-        const chunk1Messages = messageRepo.getMessages(chatroom.id, 1)
+        const chunk1Messages = await messageRepo.getMessages(chatroom.id, 1)
         expect(chunk1Messages).toHaveLength(dummyDb.CHUNK_SIZE)
 
-        const chunk2Messages = messageRepo.getMessages(chatroom.id, 2)
+        const chunk2Messages = await messageRepo.getMessages(chatroom.id, 2)
         expect(chunk2Messages).toHaveLength(1)
     })
 })
@@ -195,21 +195,21 @@ describe('Integration: User with Chatrooms', () => {
     const chatroomRepo = new ChatroomRepository()
     const messageRepo = new MessageRepository()
 
-    test('getWithChatrooms returns user and their chatrooms', async () => {
-        const user1 = userRepo.create({
+    test('listUserChatrooms returns user chatrooms', async () => {
+        const user1 = await userRepo.create({
             username: 'alice',
             password: 'hash1',
             publicKey: 'pubkey1',
         })
 
-        const user2 = userRepo.create({
+        const user2 = await userRepo.create({
             username: 'bob',
             password: 'hash2',
             publicKey: 'pubkey2',
         })
 
         // Create chatrooms and associate with users
-        const chatroom1 = chatroomRepo.create({
+        const chatroom1 = await chatroomRepo.create({
             members: [
                 { username: user1.username, publicKey: user1.publicKey },
                 { username: user2.username, publicKey: user2.publicKey },
@@ -221,7 +221,7 @@ describe('Integration: User with Chatrooms', () => {
         user2.chatroomIds.push(chatroom1.id)
 
         // Add a message
-        messageRepo.addMessage(chatroom1.id, {
+        await messageRepo.addMessage(chatroom1.id, {
             senderUsername: user1.username,
             receiverUsername: user2.username,
             message: 'Hello Bob!',
@@ -231,10 +231,10 @@ describe('Integration: User with Chatrooms', () => {
         })
 
         // Test the relationship
-        const result = await userRepo.getWithChatrooms(user1.id)
-        expect(result.user.id).toBe(user1.id)
-        expect(result.chatrooms).toHaveLength(1)
-        expect(result.chatrooms[0].id).toBe(chatroom1.id)
-        expect(result.chatrooms[0].lastMessage?.message).toBe('Hello Bob!')
+        const result = await userRepo.listUserChatrooms(user1.id)
+        expect(result).not.toBeNull()
+        expect(result).toHaveLength(1)
+        expect(result[0].id).toBe(chatroom1.id)
+        expect(result[0].lastMessage?.message).toBe('Hello Bob!')
     })
 })

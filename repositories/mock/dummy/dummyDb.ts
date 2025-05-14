@@ -376,9 +376,7 @@ export const messageChunks = global.__mockDb.messageChunks
 export const CHUNK_SIZE = 32
 
 export function emptyAll() {
-    global.__mockDb = {
-        users: [],
-        chatrooms: [],
-        messageChunks: [],
-    }
+    global.__mockDb?.users.splice(0)
+    global.__mockDb?.chatrooms.splice(0)
+    global.__mockDb?.messageChunks.splice(0)
 }
