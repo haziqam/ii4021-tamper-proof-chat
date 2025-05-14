@@ -15,6 +15,24 @@ export class MessageRepository implements IMessageRepository {
         return chunk?.messages || []
     }
 
+    async getLastMessages(chatroomId: string): Promise<{
+        messages: MessageModel[]
+        chunkSequence: number
+    }> {
+        const lastChunk = dummyDb.messageChunks
+            .filter((c) => c.chatroomId === chatroomId)
+            .sort((a, b) => b.chunkSequence - a.chunkSequence)[0]
+
+        if (!lastChunk) {
+            return { messages: [], chunkSequence: 1 }
+        }
+
+        return {
+            messages: lastChunk.messages,
+            chunkSequence: lastChunk.chunkSequence,
+        }
+    }
+
     async addMessage(
         chatroomId: string,
         message: Omit<MessageModel, 'id'>

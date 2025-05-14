@@ -115,6 +115,201 @@ global.__mockDb = global.__mockDb || {
                         s: 'asdfafd',
                     },
                 },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+            ],
+        },
+        {
+            id: 'fd40567f-deb9-4cae-9eeb-d3458afe7bed',
+            chatroomId: '72944dc3-ae31-4d84-8e81-dcdf1c85abf7',
+            createdAt: new Date(),
+            chunkSequence: 1,
+            messages: [
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
+                {
+                    message: 'Hello world',
+                    messageHash: 'asdfasdfasdfasf',
+                    senderUsername: 'haziqam',
+                    receiverUsername: 'mfidelus1',
+                    sentAt: new Date(),
+                    signature: {
+                        r: 'adsfadf',
+                        s: 'asdfafd',
+                    },
+                },
             ],
         },
         {
@@ -143,7 +338,7 @@ export const users = global.__mockDb.users
 export const chatrooms = global.__mockDb.chatrooms
 export const messageChunks = global.__mockDb.messageChunks
 
-export const CHUNK_SIZE = 32
+export const CHUNK_SIZE = 16
 
 export function emptyAll() {
     global.__mockDb?.users.splice(0)

@@ -5,6 +5,12 @@ export interface IMessageRepository {
         chatroomId: string,
         chunkSequence: number
     ) => Promise<MessageModel[]>
+
+    getLastMessages: (chatroomId: string) => Promise<{
+        messages: MessageModel[]
+        chunkSequence: number
+    }>
+
     addMessage: (
         chatroomId: string,
         message: Omit<MessageModel, 'id'>

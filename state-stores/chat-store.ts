@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Chatroom, ChatroomDetail, Message } from '@/types/chat'
+import { Chatroom, ChatroomDetail, SignedMessage } from '@/types/chat'
 import { getChatroomMessages } from '@/use-cases/mock/getChatroomMessages'
 
 interface ChatState {
@@ -8,7 +8,10 @@ interface ChatState {
 
     setChatrooms: (chatrooms: Chatroom[]) => void
     setActiveChatroom: (chatroomId: string) => Promise<void>
-    addNewMessages: (chatroomId: string, messages: Message[]) => Promise<void>
+    addNewMessages: (
+        chatroomId: string,
+        messages: SignedMessage[]
+    ) => Promise<void>
     loadOldMessages: (page: number) => Promise<void>
 }
 
@@ -28,18 +31,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
         const response = await getChatroomMessages({
             chatroomId: chatroomId,
-            chunkSequence: 1,
         })
 
-        const messages = response.messages
+        const { messages, chunkSequence } = response
 
         set({
             activeChatroom: {
                 id: chatroom.id,
                 members: chatroom.members,
                 lastMessages: messages,
-                currentChunkSequence: 1,
-                oldestLoadedChunkSequence: 1,
+                currentChunkSequence: chunkSequence,
+                oldestLoadedChunkSequence: chunkSequence,
             },
         })
     },
@@ -61,9 +63,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
         // set((state) => {
         //     const chatrooms = [...state.chatrooms]
-        //     const index = chatrooms.findIndex(
-        //         (c) => c.id === chatroomId
-        //     )
+        //     const index = chatrooms.findIndex((c) => c.id === chatroomId)
 
         //     const lastMessage = messages[messages.length - 1]
         //     if (index !== -1) {

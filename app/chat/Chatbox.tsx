@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
 import { ChangeEventHandler, KeyboardEventHandler, useState } from 'react'
+import { signMessage } from '@/use-cases/signMessage'
 
 export function Chatbox() {
     const activeChatroom = useChatStore((state) => state.activeChatroom)
@@ -95,13 +96,16 @@ function ChatboxInputText() {
         if (!userInfo || !activeChatroomId) return
         const trimmed = messageInput.trim()
         if (trimmed === '') return
-        await addNewMessages(activeChatroomId, [
-            {
-                message: trimmed,
-                senderUsername: userInfo.username,
-                sentAt: new Date(),
-            },
-        ])
+
+        const message = {
+            message: trimmed,
+            senderUsername: userInfo.username,
+            sentAt: new Date(),
+        }
+
+        const signedMessage = signMessage(message, 'PRIVATE_KEY') // Nanti diubah
+
+        await addNewMessages(activeChatroomId, [signedMessage])
         setMessageInput('')
     }
 

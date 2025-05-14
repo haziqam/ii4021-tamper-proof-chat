@@ -26,7 +26,7 @@ export type SignedMessage = Message & {
 export type ChatroomDetail = {
     id: string
     members: ChatroomMember[]
-    lastMessages: Message[]
+    lastMessages: SignedMessage[]
     currentChunkSequence: number
     oldestLoadedChunkSequence?: number
 }
