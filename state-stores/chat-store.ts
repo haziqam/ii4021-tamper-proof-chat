@@ -12,7 +12,7 @@ interface ChatState {
         chatroomId: string,
         messages: SignedMessage[]
     ) => Promise<void>
-    loadOldMessages: (page: number) => Promise<void>
+    loadOlderMessages: () => Promise<void>
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
@@ -83,23 +83,26 @@ export const useChatStore = create<ChatState>((set, get) => ({
         // })
     },
 
-    loadOldMessages: async (page) => {
+    loadOlderMessages: async () => {
         const activeChatroom = get().activeChatroom
 
         if (!activeChatroom) return
 
         const response = await getChatroomMessages({
             chatroomId: activeChatroom.id,
-            chunkSequence: page,
+            chunkSequence: activeChatroom.oldestLoadedChunkSequence - 1,
         })
+
+        console.log(response, { depth: null })
 
         const olderMessage = response.messages
 
-        activeChatroom.lastMessages.push(...olderMessage)
-        activeChatroom.oldestLoadedChunkSequence =
-            activeChatroom.oldestLoadedChunkSequence
-                ? activeChatroom.oldestLoadedChunkSequence - 1
-                : activeChatroom.currentChunkSequence
+        activeChatroom.lastMessages = [
+            ...olderMessage,
+            ...activeChatroom.lastMessages,
+        ]
+
+        activeChatroom.oldestLoadedChunkSequence--
 
         set({ activeChatroom })
     },
