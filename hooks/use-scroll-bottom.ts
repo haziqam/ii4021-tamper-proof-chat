@@ -2,14 +2,19 @@ import { Message } from '@/types/chat'
 import { useEffect, useRef } from 'react'
 
 export function useScrollBottom(messages: Message[]) {
-    const containerRef = useRef<HTMLDivElement>(null)
+    const bottomElementRef = useRef<HTMLDivElement>(null)
+    const scrollToBottom = () => {
+        console.log('autoscrolling to the bottom')
+        bottomElementRef.current?.scrollIntoView({
+            behavior: 'instant',
+            block: 'end',
+            inline: 'nearest',
+        })
+    }
 
     useEffect(() => {
-        containerRef.current?.scrollTo({
-            top: containerRef.current.scrollHeight,
-            behavior: 'instant',
-        })
+        scrollToBottom()
     }, [messages])
 
-    return containerRef
+    return { bottomElementRef, scrollToBottom }
 }

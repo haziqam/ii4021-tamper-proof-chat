@@ -93,8 +93,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
             chunkSequence: activeChatroom.oldestLoadedChunkSequence - 1,
         })
 
-        console.log(response, { depth: null })
-
         const olderMessage = response.messages
 
         activeChatroom.lastMessages = [

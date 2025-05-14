@@ -57,7 +57,7 @@ function ChatboxHeader() {
 function ChatboxContent() {
     const { activeChatroom, loadOlderMessages } = useChatStore()
     const messages = activeChatroom?.lastMessages ?? []
-    const containerRef = useScrollBottom(messages)
+    const { bottomElementRef, scrollToBottom } = useScrollBottom(messages)
     const userInfo = useUserInfo()
 
     const firstMessageRef = useRef<HTMLDivElement | null>(null)
@@ -85,10 +85,7 @@ function ChatboxContent() {
     }, [activeChatroom])
 
     return (
-        <div
-            className="flex-1 p-4 space-y-2 bg-gray-100 overflow-y-auto"
-            ref={containerRef}
-        >
+        <div className="flex-1 p-4 space-y-2 bg-gray-100 overflow-y-auto">
             {messages.map((msg, idx) => (
                 <div
                     className={`w-full flex ${
@@ -97,7 +94,13 @@ function ChatboxContent() {
                             : 'justify-start'
                     }`}
                     key={`${'messages' + msg.sentAt + '-' + idx}`}
-                    ref={idx === 0 ? firstMessageRef : null}
+                    ref={
+                        idx === 0
+                            ? firstMessageRef
+                            : idx === messages.length - 1
+                              ? bottomElementRef
+                              : null
+                    }
                 >
                     <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
                         <div className="text-sm font-semibold">
