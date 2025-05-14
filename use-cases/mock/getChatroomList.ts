@@ -1,40 +1,28 @@
 'use server'
 
-import { Chatroom } from '@/types/chat'
 import { simulateLatency } from './utils'
+import { cookies } from 'next/headers'
+import { jwtVerify } from 'jose'
+import { AccessTokenPayload } from '@/middleware'
+import { userRepository } from './dependencies/repositories'
+import { ChatroomModel } from '@/models/Chatroom'
 
-export async function getChatroomList(): Promise<Chatroom[]> {
+const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
+
+interface GetChatroomListResponse {
+    chatroomList: ChatroomModel[]
+}
+
+export async function getChatroomList(): Promise<GetChatroomListResponse> {
     await simulateLatency()
-    return [
-        {
-            chatroomId: '123',
-            chatroomName: 'leon',
-            lastMessage: {
-                message: 'Hello 789',
-                senderUsername: 'leon',
-                receiverUsername: 'haziq',
-                sentAt: new Date(),
-            },
-        },
-        {
-            chatroomId: '456',
-            chatroomName: 'abcde',
-            lastMessage: {
-                message: 'Hello 789',
-                senderUsername: 'leon',
-                receiverUsername: 'haziq',
-                sentAt: new Date(),
-            },
-        },
-        {
-            chatroomId: '113',
-            chatroomName: 'efghi',
-            lastMessage: {
-                message: 'Hello 789',
-                senderUsername: 'leon',
-                receiverUsername: 'haziq',
-                sentAt: new Date(),
-            },
-        },
-    ]
+    const cookieStore = await cookies()
+    const token = cookieStore.get('access-token')?.value!
+    const jwtPayload = (await jwtVerify<AccessTokenPayload>(token, secret))
+        .payload
+
+    const userId = jwtPayload.userId
+    const chatroomList = await userRepository.listUserChatrooms(userId)
+    console.log('getChatroomList2::chatroomList')
+    console.dir(chatroomList, { depth: null })
+    return { chatroomList }
 }

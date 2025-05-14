@@ -19,7 +19,7 @@ export function useSyncedChatroomId() {
     const router = useRouter()
 
     const urlChatroomId = searchParams.get('chatroomId')
-    const current = useChatStore((s) => s.activeChatroom?.chatroomId)
+    const current = useChatStore((s) => s.activeChatroom?.id)
     const setActive = useChatStore((s) => s.setActiveChatroom)
 
     // Sync Zustand state from URL param

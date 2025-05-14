@@ -7,11 +7,11 @@ export default async function ChatLayout({
 }: {
     children: ReactNode
 }) {
-    const chatrooms = await getChatroomList()
+    const { chatroomList } = await getChatroomList()
 
     return (
         <div className="flex">
-            <ChatroomListWrapper chatrooms={chatrooms} />
+            <ChatroomListWrapper chatrooms={chatroomList} />
             {children}
         </div>
     )

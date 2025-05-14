@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { Chatroom, ChatroomDetail, Message } from '@/types/chat'
 import { getChatroomMessages } from '@/use-cases/mock/getChatroomMessages'
-import { getChatroomDetails } from '@/use-cases/mock/getChatroomDetails'
 
 interface ChatState {
     chatrooms: Chatroom[]
@@ -21,17 +20,32 @@ export const useChatStore = create<ChatState>((set, get) => ({
     setChatrooms: (chatrooms) => set({ chatrooms }),
 
     setActiveChatroom: async (chatroomId) => {
-        const chatroom = await getChatroomDetails({ chatroomId })
+        const chatroom = get().chatrooms.find(
+            (chatroom) => chatroom.id === chatroomId
+        )
+
+        if (!chatroom) return
+
+        const response = await getChatroomMessages({
+            chatroomId: chatroomId,
+            chunkSequence: 1,
+        })
+
+        const messages = response.messages
+
         set({
             activeChatroom: {
-                ...chatroom,
-                oldestLoadedPage: chatroom.currentPage,
+                id: chatroom.id,
+                members: chatroom.members,
+                lastMessages: messages,
+                currentChunkSequence: 1,
+                oldestLoadedChunkSequence: 1,
             },
         })
     },
 
     addNewMessages: async (chatroomId, messages) => {
-        const isActive = get().activeChatroom?.chatroomId === chatroomId
+        const isActive = get().activeChatroom?.id === chatroomId
 
         if (isActive) {
             set((state) => ({
@@ -45,28 +59,28 @@ export const useChatStore = create<ChatState>((set, get) => ({
             }))
         }
 
-        set((state) => {
-            const chatrooms = [...state.chatrooms]
-            const index = chatrooms.findIndex(
-                (c) => c.chatroomId === chatroomId
-            )
+        // set((state) => {
+        //     const chatrooms = [...state.chatrooms]
+        //     const index = chatrooms.findIndex(
+        //         (c) => c.id === chatroomId
+        //     )
 
-            const lastMessage = messages[messages.length - 1]
-            if (index !== -1) {
-                chatrooms[index] = {
-                    ...chatrooms[index],
-                    lastMessage: lastMessage,
-                }
-            } else {
-                chatrooms.push({
-                    chatroomId,
-                    chatroomName: lastMessage.senderUsername,
-                    lastMessage: lastMessage,
-                })
-            }
+        //     const lastMessage = messages[messages.length - 1]
+        //     if (index !== -1) {
+        //         chatrooms[index] = {
+        //             ...chatrooms[index],
+        //             lastMessage: lastMessage,
+        //         }
+        //     } else {
+        //         chatrooms.push({
+        //             chatroomId,
+        //             chatroomName: lastMessage.senderUsername,
+        //             lastMessage: lastMessage,
+        //         })
+        //     }
 
-            return { chatrooms }
-        })
+        //     return { chatrooms }
+        // })
     },
 
     loadOldMessages: async (page) => {
@@ -74,15 +88,18 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
         if (!activeChatroom) return
 
-        const olderMessage = await getChatroomMessages({
-            chatroomId: activeChatroom.chatroomId,
+        const response = await getChatroomMessages({
+            chatroomId: activeChatroom.id,
             chunkSequence: page,
         })
 
+        const olderMessage = response.messages
+
         activeChatroom.lastMessages.push(...olderMessage)
-        activeChatroom.oldestLoadedPage = activeChatroom.oldestLoadedPage
-            ? activeChatroom.oldestLoadedPage - 1
-            : activeChatroom.currentPage
+        activeChatroom.oldestLoadedChunkSequence =
+            activeChatroom.oldestLoadedChunkSequence
+                ? activeChatroom.oldestLoadedChunkSequence - 1
+                : activeChatroom.currentChunkSequence
 
         set({ activeChatroom })
     },

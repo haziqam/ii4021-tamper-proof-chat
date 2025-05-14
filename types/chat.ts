@@ -1,14 +1,19 @@
 import { ECSignature } from './crypto'
 
 export type Chatroom = {
-    chatroomId: string
-    chatroomName: string
-    lastMessage: Message
+    id: string
+    members: ChatroomMember[]
+    lastMessage?: {
+        senderUsername: string
+        message: string
+        sentAt: Date
+        chunkSequence: number
+    }
+    createdAt: Date
 }
 
 export type Message = {
     senderUsername: string
-    receiverUsername: string
     message: string
     sentAt: Date
 }
@@ -19,12 +24,11 @@ export type SignedMessage = Message & {
 }
 
 export type ChatroomDetail = {
-    chatroomId: string
-    chatroomName: string
+    id: string
     members: ChatroomMember[]
     lastMessages: Message[]
-    currentPage: number
-    oldestLoadedPage?: number
+    currentChunkSequence: number
+    oldestLoadedChunkSequence?: number
 }
 
 export type ChatroomMember = {

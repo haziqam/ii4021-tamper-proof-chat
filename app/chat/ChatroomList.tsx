@@ -64,7 +64,7 @@ export function ChatroomList() {
                         <SidebarGroupContent>
                             <SidebarMenu>
                                 {chatrooms.map((chatroom) => (
-                                    <SidebarMenuItem key={chatroom.chatroomId}>
+                                    <SidebarMenuItem key={chatroom.id}>
                                         <SidebarMenuButton asChild>
                                             <ChatroomItem chatroom={chatroom} />
                                         </SidebarMenuButton>
@@ -126,10 +126,19 @@ interface ChatroomItemProps {
 function ChatroomItem(props: ChatroomItemProps) {
     const { chatroom } = props
     const { chatroomId, setChatroomId } = useSyncedChatroomId()
-    const isActive = chatroom.chatroomId == chatroomId
+    const userInfo = useUserInfo()
+    const isActive = chatroom.id == chatroomId
+
+    if (!userInfo) return null
+
+    const peerUsername = chatroom.members.find(
+        (member) => member.username !== userInfo.username
+    )?.username
+
+    const lastMessage = chatroom.lastMessage?.message
 
     const handleClick: MouseEventHandler<HTMLDivElement> = () => {
-        setChatroomId(chatroom.chatroomId)
+        setChatroomId(chatroom.id)
     }
 
     return (
@@ -143,10 +152,8 @@ function ChatroomItem(props: ChatroomItemProps) {
                     <AvatarFallback>User</AvatarFallback>
                 </Avatar>
                 <div>
-                    <div className="font-bold text-xl">
-                        {chatroom.chatroomName}
-                    </div>
-                    <div>{chatroom.lastMessage.message}</div>
+                    <div className="font-bold text-xl">{peerUsername}</div>
+                    <div>{lastMessage}</div>
                 </div>
             </div>
         </Card>

@@ -26,7 +26,13 @@ export function Chatbox() {
 
 function ChatboxHeader() {
     const activeChatroom = useChatStore((state) => state.activeChatroom)
-    const targetUsername = activeChatroom?.chatroomName
+    const userInfo = useUserInfo()
+
+    if (!userInfo || !activeChatroom) return null
+
+    const peerUsername = activeChatroom.members.find(
+        (member) => member.username !== userInfo.username
+    )?.username
 
     return (
         <Card className="bg-gray-300 px-5 py-4 rounded-b-xl rounded-t-none ">
@@ -35,7 +41,7 @@ function ChatboxHeader() {
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>User</AvatarFallback>
                 </Avatar>
-                <div className="font-extrabold text-2xl">{targetUsername}</div>
+                <div className="font-extrabold text-2xl">{peerUsername}</div>
             </div>
         </Card>
     )
@@ -77,7 +83,7 @@ function ChatboxInputText() {
     const addNewMessages = useChatStore((state) => state.addNewMessages)
 
     const activeChatroom = useChatStore((state) => state.activeChatroom)
-    const activeChatroomId = activeChatroom?.chatroomId
+    const activeChatroomId = activeChatroom?.id
     const [messageInput, setMessageInput] = useState('')
     const userInfo = useUserInfo()
 
@@ -93,9 +99,6 @@ function ChatboxInputText() {
             {
                 message: trimmed,
                 senderUsername: userInfo.username,
-                receiverUsername: activeChatroom.members.find(
-                    (m) => m.username !== userInfo.username
-                )?.username!,
                 sentAt: new Date(),
             },
         ])

@@ -39,7 +39,7 @@ export class MessageRepository implements IMessageRepository {
         // Add message
         lastChunk.messages.push(message)
 
-        // Update chatroom's last message
+        // Update chatroom's last message => can be async
         const chatroom = dummyDb.chatrooms.find((c) => c.id === chatroomId)
         if (chatroom) {
             chatroom.lastMessage = {
