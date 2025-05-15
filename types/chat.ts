@@ -1,20 +1,34 @@
+import { ECSignature } from './crypto'
+
 export type Chatroom = {
-    chatroomId: string
-    chatroomName: string
-    lastChat: string
+    id: string
+    members: ChatroomMember[]
+    lastMessage?: {
+        senderUsername: string
+        message: string
+        sentAt: Date
+        chunkSequence: number
+    }
+    createdAt: Date
 }
 
 export type Message = {
     senderUsername: string
     message: string
-    timestamp: Date
+    sentAt: Date
+}
+
+export type SignedMessage = Message & {
+    messageHash: string
+    signature: ECSignature
 }
 
 export type ChatroomDetail = {
-    chatroomId: string
-    targetUsername: string
-    members?: ChatroomMember[]
-    lastMessages: Message[]
+    id: string
+    members: ChatroomMember[]
+    lastMessages: SignedMessage[]
+    currentChunkSequence: number
+    oldestLoadedChunkSequence?: number
 }
 
 export type ChatroomMember = {

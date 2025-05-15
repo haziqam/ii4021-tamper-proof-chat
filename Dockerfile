@@ -13,6 +13,7 @@ RUN \
   else echo "Lockfile not found." && exit 1; \
   fi
 
+RUN npx prisma generate
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -26,7 +27,7 @@ COPY . .
 # ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN \
-  if [ -f package-lock.json ]; then corepack enable npm && npm run build; \
+  if [ -f package-lock.json ]; then npm run build; \
   else echo "Lockfile not found." && exit 1; \
   fi
 

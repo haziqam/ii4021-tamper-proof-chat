@@ -1,3 +1,3 @@
 export default async function SearchPage() {
-    return <div>Users list</div>
+    return <div>Start a new conversation</div>
 }

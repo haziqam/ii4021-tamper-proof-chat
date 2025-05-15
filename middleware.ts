@@ -3,6 +3,10 @@ import type { NextRequest } from 'next/server'
 import { jwtVerify } from 'jose'
 import { JWTExpired } from 'jose/errors'
 
+export type AccessTokenPayload = {
+    userId: string
+}
+
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 
 export async function middleware(req: NextRequest) {

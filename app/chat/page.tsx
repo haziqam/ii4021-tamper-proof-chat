@@ -12,7 +12,7 @@ export default function ChatPage() {
     const setActiveChatroom = useChatStore((s) => s.setActiveChatroom)
 
     useEffect(() => {
-        if (!chatroomId || activeChatroom?.chatroomId === chatroomId) return
+        if (!chatroomId || activeChatroom?.id === chatroomId) return
         setActiveChatroom(chatroomId)
     }, [chatroomId])
 

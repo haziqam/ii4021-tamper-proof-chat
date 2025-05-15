@@ -1,46 +1,53 @@
 import { create } from 'zustand'
-import { Chatroom, ChatroomDetail, Message } from '@/types/chat'
-import { getChatroomMessages } from '@/use-case/mock/getChatroomMessages'
+import { Chatroom, ChatroomDetail, SignedMessage } from '@/types/chat'
+import { getChatroomMessages } from '@/use-cases/mock/getChatroomMessages'
 
 interface ChatState {
     chatrooms: Chatroom[]
     activeChatroom: ChatroomDetail | null
 
     setChatrooms: (chatrooms: Chatroom[]) => void
-    setActiveChatroom: (chatroomId: string) => void
-    addMessage: (chatroomId: string, message: Message) => void
+    setActiveChatroom: (chatroomId: string) => Promise<void>
+    addNewMessages: (
+        chatroomId: string,
+        messages: SignedMessage[]
+    ) => Promise<void>
+    loadOldMessages: (page: number) => Promise<void>
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
     chatrooms: [],
+
     activeChatroom: null,
 
     setChatrooms: (chatrooms) => set({ chatrooms }),
 
     setActiveChatroom: async (chatroomId) => {
         const chatroom = get().chatrooms.find(
-            (c) => c.chatroomId === chatroomId
+            (chatroom) => chatroom.id === chatroomId
         )
 
         if (!chatroom) return
 
-        const targetUsername = chatroom.chatroomName
-
-        const messages = await getChatroomMessages({
-            chatroomId: chatroom.chatroomId,
+        const response = await getChatroomMessages({
+            chatroomId: chatroomId,
         })
+
+        const { messages, chunkSequence } = response
 
         set({
             activeChatroom: {
-                chatroomId,
-                targetUsername,
+                id: chatroom.id,
+                members: chatroom.members,
                 lastMessages: messages,
+                currentChunkSequence: chunkSequence,
+                oldestLoadedChunkSequence: chunkSequence,
             },
         })
     },
 
-    addMessage: (chatroomId, message) => {
-        const isActive = get().activeChatroom?.chatroomId === chatroomId
+    addNewMessages: async (chatroomId, messages) => {
+        const isActive = get().activeChatroom?.id === chatroomId
 
         if (isActive) {
             set((state) => ({
@@ -48,32 +55,52 @@ export const useChatStore = create<ChatState>((set, get) => ({
                     ...state.activeChatroom!,
                     lastMessages: [
                         ...state.activeChatroom!.lastMessages,
-                        message,
+                        ...messages,
                     ],
                 },
             }))
         }
 
-        set((state) => {
-            const chatrooms = [...state.chatrooms]
-            const index = chatrooms.findIndex(
-                (c) => c.chatroomId === chatroomId
-            )
+        // set((state) => {
+        //     const chatrooms = [...state.chatrooms]
+        //     const index = chatrooms.findIndex((c) => c.id === chatroomId)
 
-            if (index !== -1) {
-                chatrooms[index] = {
-                    ...chatrooms[index],
-                    lastChat: message.message,
-                }
-            } else {
-                chatrooms.push({
-                    chatroomId,
-                    chatroomName: message.senderUsername,
-                    lastChat: message.message,
-                })
-            }
+        //     const lastMessage = messages[messages.length - 1]
+        //     if (index !== -1) {
+        //         chatrooms[index] = {
+        //             ...chatrooms[index],
+        //             lastMessage: lastMessage,
+        //         }
+        //     } else {
+        //         chatrooms.push({
+        //             chatroomId,
+        //             chatroomName: lastMessage.senderUsername,
+        //             lastMessage: lastMessage,
+        //         })
+        //     }
 
-            return { chatrooms }
+        //     return { chatrooms }
+        // })
+    },
+
+    loadOldMessages: async (page) => {
+        const activeChatroom = get().activeChatroom
+
+        if (!activeChatroom) return
+
+        const response = await getChatroomMessages({
+            chatroomId: activeChatroom.id,
+            chunkSequence: page,
         })
+
+        const olderMessage = response.messages
+
+        activeChatroom.lastMessages.push(...olderMessage)
+        activeChatroom.oldestLoadedChunkSequence =
+            activeChatroom.oldestLoadedChunkSequence
+                ? activeChatroom.oldestLoadedChunkSequence - 1
+                : activeChatroom.currentChunkSequence
+
+        set({ activeChatroom })
     },
 }))

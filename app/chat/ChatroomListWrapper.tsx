@@ -1,4 +1,3 @@
-// /app/chat/ChatroomListWrapper.tsx
 'use client'
 
 import { useEffect } from 'react'

@@ -1,5 +1,5 @@
 'use client'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import {
     Sidebar,
     SidebarProvider,
@@ -12,27 +12,47 @@ import {
     SidebarMenuItem,
     SidebarFooter,
     SidebarHeader,
+    SIDEBAR_WIDTH,
 } from '@/components/ui/sidebar'
+import { useSyncedChatroomId } from '@/hooks/use-synced-chatroom-id'
+import { useUserInfo } from '@/hooks/user-info-store'
 import { useChatStore } from '@/state-stores/chat-store'
 import { Chatroom } from '@/types/chat'
-import { logout } from '@/use-case/mock/logout'
+import { logout } from '@/use-cases/mock/logout'
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from '@radix-ui/react-dropdown-menu'
+} from '@/components/ui/dropdown-menu'
 
-import { ChevronUp, LogOut, User, User2 } from 'lucide-react'
+import { ChevronUp, LogOut, MessageSquarePlus, User, User2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { MouseEventHandler } from 'react'
+import { MouseEventHandler, startTransition } from 'react'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export function ChatroomList() {
     const chatrooms = useChatStore((state) => state.chatrooms)
+    const router = useRouter()
 
-    const handleLogout: MouseEventHandler<HTMLButtonElement> = () => {
-        logout()
+    const handleLogout: MouseEventHandler<HTMLDivElement> = () => {
+        startTransition(() => {
+            return logout()
+        })
     }
+
+    const handleNewChat: MouseEventHandler<HTMLDivElement> = () => {
+        router.push('/search')
+    }
+
+    const userInfo = useUserInfo()
+
+    const DROPDOWN_WIDTH_PERCENTAGE = 0.8
+    const DROPDOWN_WIDTH =
+        parseInt(SIDEBAR_WIDTH.replace('rem', ''), 10) *
+            DROPDOWN_WIDTH_PERCENTAGE +
+        'rem'
 
     return (
         <SidebarProvider>
@@ -44,7 +64,7 @@ export function ChatroomList() {
                         <SidebarGroupContent>
                             <SidebarMenu>
                                 {chatrooms.map((chatroom) => (
-                                    <SidebarMenuItem key={chatroom.chatroomId}>
+                                    <SidebarMenuItem key={chatroom.id}>
                                         <SidebarMenuButton asChild>
                                             <ChatroomItem chatroom={chatroom} />
                                         </SidebarMenuButton>
@@ -59,23 +79,35 @@ export function ChatroomList() {
                         <SidebarMenuItem>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <SidebarMenuButton className="px-2 py-2">
-                                        <User2 /> Username
+                                    <SidebarMenuButton className="py-5">
+                                        <User2 />{' '}
+                                        {userInfo?.username ?? 'Username'}
                                         <ChevronUp className="ml-auto" />
                                     </SidebarMenuButton>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent
                                     side="top"
-                                    className="w-[calc(var(--sidebar-width)*0.9)] bg-gray-300 rounded-xl"
+                                    className="bg-primary rounded-xl"
                                 >
-                                    <DropdownMenuItem asChild>
-                                        <Button
-                                            className="w-full flex gap-3 cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-400 focus-visible:outline-none"
-                                            onClick={handleLogout}
-                                        >
-                                            <LogOut />
-                                            Log out
-                                        </Button>
+                                    <DropdownMenuItem
+                                        onClick={handleNewChat}
+                                        className="text-gray-50 cursor-pointer gap-4 text-xl flex px-6 py-3"
+                                        style={{ width: DROPDOWN_WIDTH }}
+                                    >
+                                        <MessageSquarePlus
+                                            style={{ transform: 'scale(1.5)' }}
+                                        />
+                                        <div>New Chat</div>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onClick={handleLogout}
+                                        className="text-gray-50 cursor-pointer gap-4 text-xl flex px-6 py-3"
+                                        style={{ width: DROPDOWN_WIDTH }}
+                                    >
+                                        <LogOut
+                                            style={{ transform: 'scale(1.5)' }}
+                                        />
+                                        <div>Log out</div>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
@@ -93,30 +125,37 @@ interface ChatroomItemProps {
 
 function ChatroomItem(props: ChatroomItemProps) {
     const { chatroom } = props
-    const router = useRouter()
-    const activeChatroom = useChatStore((s) => s.activeChatroom)
-    const setActiveChatroom = useChatStore((s) => s.setActiveChatroom)
-    const isActive = chatroom.chatroomId === activeChatroom?.chatroomId
+    const { chatroomId, setChatroomId } = useSyncedChatroomId()
+    const userInfo = useUserInfo()
+    const isActive = chatroom.id == chatroomId
+
+    if (!userInfo) return null
+
+    const peerUsername = chatroom.members.find(
+        (member) => member.username !== userInfo.username
+    )?.username
+
+    const lastMessage = chatroom.lastMessage?.message
 
     const handleClick: MouseEventHandler<HTMLDivElement> = () => {
-        setActiveChatroom(chatroom.chatroomId)
-        const url = new URL(window.location.href)
-        url.searchParams.set('chatroomId', chatroom.chatroomId)
-        router.push(url.toString())
+        setChatroomId(chatroom.id)
     }
 
     return (
-        <div
-            className={`flex gap-3 px-3 py-3 ${isActive ? 'bg-gray-400' : 'bg-gray-300'} hover:bg-gray-400 rounded-xl cursor-pointer`}
+        <Card
+            className={`${isActive ? 'bg-gray-400' : 'bg-gray-300'} hover:bg-gray-400 rounded-xl cursor-pointer py-3`}
             onClick={handleClick}
         >
-            <div className="rounded-full bg-gray-600 p-1">
-                <User />
+            <div className="flex gap-3 px-3 items-center">
+                <Avatar className="w-12 h-12">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>User</AvatarFallback>
+                </Avatar>
+                <div>
+                    <div className="font-bold text-xl">{peerUsername}</div>
+                    <div>{lastMessage}</div>
+                </div>
             </div>
-            <div>
-                <div className="font-bold">{chatroom.chatroomName}</div>
-                <div className="text-xs">{chatroom.lastChat}</div>
-            </div>
-        </div>
+        </Card>
     )
 }

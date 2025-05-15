@@ -1,6 +1,5 @@
-// /app/chat/layout.tsx
 import { ReactNode } from 'react'
-import { getChatroomList } from '@/use-case/mock/getChatroomList'
+import { getChatroomList } from '@/use-cases/mock/getChatroomList'
 import { ChatroomListWrapper } from './ChatroomListWrapper'
 
 export default async function ChatLayout({
@@ -8,11 +7,11 @@ export default async function ChatLayout({
 }: {
     children: ReactNode
 }) {
-    const chatrooms = await getChatroomList()
+    const { chatroomList } = await getChatroomList()
 
     return (
         <div className="flex">
-            <ChatroomListWrapper chatrooms={chatrooms} />
+            <ChatroomListWrapper chatrooms={chatroomList} />
             {children}
         </div>
     )

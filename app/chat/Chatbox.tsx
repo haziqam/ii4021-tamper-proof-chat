@@ -1,7 +1,15 @@
+'use client'
+
 import { useScrollBottom } from '@/hooks/use-scroll-bottom'
 import { useChatStore } from '@/state-stores/chat-store'
-import { getUserInfo } from '@/state-stores/user-info-store'
-import { User } from 'lucide-react'
+import { useUserInfo } from '@/hooks/user-info-store'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Send } from 'lucide-react'
+import { ChangeEventHandler, KeyboardEventHandler, useState } from 'react'
+import { signMessage } from '@/use-cases/signMessage'
 
 export function Chatbox() {
     const activeChatroom = useChatStore((state) => state.activeChatroom)
@@ -19,15 +27,24 @@ export function Chatbox() {
 
 function ChatboxHeader() {
     const activeChatroom = useChatStore((state) => state.activeChatroom)
-    const targetUsername = activeChatroom?.targetUsername
+    const userInfo = useUserInfo()
+
+    if (!userInfo || !activeChatroom) return null
+
+    const peerUsername = activeChatroom.members.find(
+        (member) => member.username !== userInfo.username
+    )?.username
 
     return (
-        <div className="w-full bg-gray-300 p-4 rounded-b-xl font-extrabold flex gap-3 items-center">
-            <div className="rounded-full bg-gray-600 p-1">
-                <User />
+        <Card className="bg-gray-300 px-5 py-4 rounded-b-xl rounded-t-none ">
+            <div className="w-full flex gap-5 items-center">
+                <Avatar className="w-15 h-15">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>User</AvatarFallback>
+                </Avatar>
+                <div className="font-extrabold text-2xl">{peerUsername}</div>
             </div>
-            <div>{targetUsername}</div>
-        </div>
+        </Card>
     )
 }
 
@@ -35,7 +52,7 @@ function ChatboxContent() {
     const activeChatroom = useChatStore((state) => state.activeChatroom)
     const messages = activeChatroom?.lastMessages ?? []
     const scrollRef = useScrollBottom(messages)
-    const userInfo = getUserInfo()
+    const userInfo = useUserInfo()
 
     return (
         <div
@@ -49,7 +66,7 @@ function ChatboxContent() {
                             ? 'justify-end'
                             : 'justify-start'
                     }`}
-                    key={idx}
+                    key={`${'messages' + msg.sentAt + '-' + idx}`}
                 >
                     <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
                         <div className="text-sm font-semibold">
@@ -64,13 +81,53 @@ function ChatboxContent() {
 }
 
 function ChatboxInputText() {
+    const addNewMessages = useChatStore((state) => state.addNewMessages)
+
+    const activeChatroom = useChatStore((state) => state.activeChatroom)
+    const activeChatroomId = activeChatroom?.id
+    const [messageInput, setMessageInput] = useState('')
+    const userInfo = useUserInfo()
+
+    const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        setMessageInput(e.target.value)
+    }
+
+    const handleSend = async () => {
+        if (!userInfo || !activeChatroomId) return
+        const trimmed = messageInput.trim()
+        if (trimmed === '') return
+
+        const message = {
+            message: trimmed,
+            senderUsername: userInfo.username,
+            sentAt: new Date(),
+        }
+
+        const signedMessage = signMessage(message, 'PRIVATE_KEY') // Nanti diubah
+
+        await addNewMessages(activeChatroomId, [signedMessage])
+        setMessageInput('')
+    }
+
+    const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
+        if (e.key === 'Enter') {
+            handleSend()
+        }
+    }
+
     return (
-        <div className="bg-gray-300 p-4">
-            <input
+        <div className="flex items-center space-x-2 p-4">
+            <Input
+                className="flex-1"
                 type="text"
                 placeholder="Type a message..."
-                className="w-full px-4 py-2 rounded-lg bg-gray-100 focus:outline-none"
+                value={messageInput}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
             />
+            <Button onClick={handleSend}>
+                <Send />
+            </Button>
         </div>
     )
 }
