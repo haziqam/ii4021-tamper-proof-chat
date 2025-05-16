@@ -1,7 +1,9 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useChatStore } from '@/state-stores/chat-store'
+// import { useChatStore } from '@/state-stores/chat-store'
+import { useChatStore } from '@/state-stores/chat-store-2'
+
 import { Chatroom } from '@/types/chat'
 import { ChatroomList } from './ChatroomList'
 

@@ -1,7 +1,9 @@
-import { JsonValue } from "@/generated/prisma/runtime/library"
+import { JsonValue } from '@/generated/prisma/runtime/library'
 
 export type MessageModel = {
-    sender: string
+    id: string
+    senderUsername: string
+    receiverUsername: string
     message: string
     sentAt: Date
     messageHash: string

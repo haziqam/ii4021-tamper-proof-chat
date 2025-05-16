@@ -6,28 +6,28 @@ import { messageRepository } from './dependencies/repositories'
 
 interface GetChatroomMessagesPayload {
     chatroomId: string
-    chunkSequence?: number
+    pageSequence?: number
 }
 
 interface GetChatroomMessagesResponse {
     messages: MessageModel[]
-    chunkSequence: number
+    pageSequence: number
 }
 
 export async function getChatroomMessages(
     payload: GetChatroomMessagesPayload
 ): Promise<GetChatroomMessagesResponse> {
-    const { chatroomId, chunkSequence } = payload
+    const { chatroomId, pageSequence } = payload
     await simulateLatency()
-    if (!chunkSequence) {
-        const { messages, chunkSequence } =
+    if (!pageSequence) {
+        const { messages, pageSequence } =
             await messageRepository.getLastMessages(chatroomId)
-        return { messages, chunkSequence }
+        return { messages, pageSequence }
     }
 
     const messages = await messageRepository.getMessages(
         chatroomId,
-        chunkSequence
+        pageSequence
     )
-    return { messages, chunkSequence }
+    return { messages, pageSequence }
 }

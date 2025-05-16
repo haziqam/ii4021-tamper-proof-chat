@@ -3,12 +3,12 @@ import { MessageModel } from '@/models/Message'
 export interface IMessageRepository {
     getMessages: (
         chatroomId: string,
-        chunkSequence: number
+        pageSequence: number
     ) => Promise<MessageModel[]>
 
     getLastMessages: (chatroomId: string) => Promise<{
         messages: MessageModel[]
-        chunkSequence: number
+        pageSequence: number
     }>
 
     addMessage: (

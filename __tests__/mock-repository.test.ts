@@ -76,7 +76,7 @@ describe('ChatroomRepository', () => {
         // Verify initial chunk was created
         expect(dummyDb.messageChunks).toHaveLength(1)
         expect(dummyDb.messageChunks[0].chatroomId).toBe(chatroom.id)
-        expect(dummyDb.messageChunks[0].chunkSequence).toBe(1)
+        expect(dummyDb.messageChunks[0].pageSequence).toBe(1)
     })
 
     test('getLastChunk returns correct chunk', async () => {
@@ -162,7 +162,7 @@ describe('MessageRepository', () => {
         // Should now have two chunks
         expect(dummyDb.messageChunks).toHaveLength(2)
         expect(dummyDb.messageChunks[1].messages).toHaveLength(1)
-        expect(dummyDb.messageChunks[1].chunkSequence).toBe(2)
+        expect(dummyDb.messageChunks[1].pageSequence).toBe(2)
     })
 
     test('getMessages returns correct chunk', async () => {

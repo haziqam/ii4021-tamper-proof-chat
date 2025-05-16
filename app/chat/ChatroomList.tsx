@@ -16,7 +16,8 @@ import {
 } from '@/components/ui/sidebar'
 import { useSyncedChatroomId } from '@/hooks/use-synced-chatroom-id'
 import { useUserInfo } from '@/hooks/user-info-store'
-import { useChatStore } from '@/state-stores/chat-store'
+// import { useChatStore } from '@/state-stores/chat-store'
+import { useChatStore } from '@/state-stores/chat-store-2'
 import { Chatroom } from '@/types/chat'
 import { logout } from '@/use-cases/mock/logout'
 import {
@@ -26,11 +27,12 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-import { ChevronUp, LogOut, MessageSquarePlus, User, User2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { ChevronUp, LogOut, MessageSquarePlus, User2 } from 'lucide-react'
+import { useParams, useRouter } from 'next/navigation'
 import { MouseEventHandler, startTransition } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import Link from 'next/link'
 
 export function ChatroomList() {
     const chatrooms = useChatStore((state) => state.chatrooms)
@@ -125,7 +127,9 @@ interface ChatroomItemProps {
 
 function ChatroomItem(props: ChatroomItemProps) {
     const { chatroom } = props
-    const { chatroomId, setChatroomId } = useSyncedChatroomId()
+    const params = useParams()
+    const chatroomId = params.chatroomId as string
+
     const userInfo = useUserInfo()
     const isActive = chatroom.id == chatroomId
 
@@ -137,25 +141,22 @@ function ChatroomItem(props: ChatroomItemProps) {
 
     const lastMessage = chatroom.lastMessage?.message
 
-    const handleClick: MouseEventHandler<HTMLDivElement> = () => {
-        setChatroomId(chatroom.id)
-    }
-
     return (
         <Card
             className={`${isActive ? 'bg-gray-400' : 'bg-gray-300'} hover:bg-gray-400 rounded-xl cursor-pointer py-3`}
-            onClick={handleClick}
         >
-            <div className="flex gap-3 px-3 items-center">
-                <Avatar className="w-12 h-12">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>User</AvatarFallback>
-                </Avatar>
-                <div>
-                    <div className="font-bold text-xl">{peerUsername}</div>
-                    <div>{lastMessage}</div>
+            <Link href={`/chat/${chatroom.id}`}>
+                <div className="flex gap-3 px-3 items-center">
+                    <Avatar className="w-12 h-12">
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarFallback>User</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <div className="font-bold text-xl">{peerUsername}</div>
+                        <div>{lastMessage}</div>
+                    </div>
                 </div>
-            </div>
+            </Link>
         </Card>
     )
 }

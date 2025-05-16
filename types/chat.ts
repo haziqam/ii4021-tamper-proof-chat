@@ -13,6 +13,7 @@ export type Chatroom = {
 }
 
 export type Message = {
+    id: string
     senderUsername: string
     receiverUsername: string
     message: string

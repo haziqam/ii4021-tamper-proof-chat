@@ -6,7 +6,7 @@ import { ec as EC } from 'elliptic'
 
 const ec = new EC('secp256k1')
 
-export function hashMessage(message: Message): string {
+export function hashMessage(message: Omit<Message, 'id'>): string {
     const canonicalMessage = {
         ...message,
         sentAt: message.sentAt.toISOString(),
@@ -16,9 +16,9 @@ export function hashMessage(message: Message): string {
 }
 
 export function signMessage(
-    message: Message,
+    message: Omit<Message, 'id'>,
     privateKey: string
-): SignedMessage {
+): Omit<SignedMessage, 'id'> {
     const msgHash = hashMessage(message)
 
     const key = ec.keyFromPrivate(privateKey, 'hex')

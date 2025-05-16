@@ -33,7 +33,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
             chatroomId: chatroomId,
         })
 
-        const { messages, chunkSequence } = response
+        const { messages, pageSequence: chunkSequence } = response
 
         set({
             activeChatroom: {
@@ -90,7 +90,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
         const response = await getChatroomMessages({
             chatroomId: activeChatroom.id,
-            chunkSequence: activeChatroom.oldestLoadedChunkSequence - 1,
+            pageSequence: activeChatroom.oldestLoadedChunkSequence - 1,
         })
 
         const olderMessage = response.messages

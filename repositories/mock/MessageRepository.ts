@@ -6,30 +6,30 @@ import { IMessageRepository } from '../interface/IMessageRepository'
 export class MessageRepository implements IMessageRepository {
     async getMessages(
         chatroomId: string,
-        chunkSequence: number
+        pageSequence: number
     ): Promise<MessageModel[]> {
         const chunk = dummyDb.messageChunks.find(
             (c) =>
-                c.chatroomId === chatroomId && c.chunkSequence === chunkSequence
+                c.chatroomId === chatroomId && c.pageSequence === pageSequence
         )
         return chunk?.messages || []
     }
 
     async getLastMessages(chatroomId: string): Promise<{
         messages: MessageModel[]
-        chunkSequence: number
+        pageSequence: number
     }> {
         const lastChunk = dummyDb.messageChunks
             .filter((c) => c.chatroomId === chatroomId)
-            .sort((a, b) => b.chunkSequence - a.chunkSequence)[0]
+            .sort((a, b) => b.pageSequence - a.pageSequence)[0]
 
         if (!lastChunk) {
-            return { messages: [], chunkSequence: 1 }
+            return { messages: [], pageSequence: 1 }
         }
 
         return {
             messages: lastChunk.messages,
-            chunkSequence: lastChunk.chunkSequence,
+            pageSequence: lastChunk.pageSequence,
         }
     }
 
@@ -39,23 +39,24 @@ export class MessageRepository implements IMessageRepository {
     ): Promise<MessageModel> {
         let lastChunk = dummyDb.messageChunks
             .filter((c) => c.chatroomId === chatroomId)
-            .sort((a, b) => b.chunkSequence - a.chunkSequence)[0]
+            .sort((a, b) => b.pageSequence - a.pageSequence)[0]
 
         // Create new chunk if needed
         if (!lastChunk || lastChunk.messages.length >= dummyDb.CHUNK_SIZE) {
-            const newSequence = lastChunk ? lastChunk.chunkSequence + 1 : 1
+            const newSequence = lastChunk ? lastChunk.pageSequence + 1 : 1
             lastChunk = {
                 id: uuidv4(),
                 chatroomId,
-                chunkSequence: newSequence,
+                pageSequence: newSequence,
                 createdAt: new Date(),
                 messages: [],
             }
             dummyDb.messageChunks.push(lastChunk)
         }
 
+        const messageWithId = { ...message, id: uuidv4() }
         // Add message
-        lastChunk.messages.push(message)
+        lastChunk.messages.push(messageWithId)
 
         // Update chatroom's last message => can be async
         const chatroom = dummyDb.chatrooms.find((c) => c.id === chatroomId)
@@ -64,10 +65,10 @@ export class MessageRepository implements IMessageRepository {
                 senderUsername: message.senderUsername,
                 message: message.message,
                 sentAt: message.sentAt,
-                chunkSequence: lastChunk.chunkSequence,
+                pageSequence: lastChunk.pageSequence,
             }
         }
 
-        return message
+        return messageWithId
     }
 }

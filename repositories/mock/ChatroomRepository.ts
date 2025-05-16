@@ -33,14 +33,14 @@ export class ChatroomRepository implements IChatroomRepository {
     private getNextChunkSequence(chatroomId: string): number {
         const lastChunk = [...dummyDb.messageChunks]
             .filter((c) => c.chatroomId === chatroomId)
-            .sort((a, b) => b.chunkSequence - a.chunkSequence)[0]
+            .sort((a, b) => b.pageSequence - a.pageSequence)[0]
 
-        return lastChunk ? lastChunk.chunkSequence + 1 : 1
+        return lastChunk ? lastChunk.pageSequence + 1 : 1
     }
 
     getLastChunk(chatroomId: string) {
         return [...dummyDb.messageChunks]
             .filter((c) => c.chatroomId === chatroomId)
-            .sort((a, b) => b.chunkSequence - a.chunkSequence)[0]
+            .sort((a, b) => b.pageSequence - a.pageSequence)[0]
     }
 }
