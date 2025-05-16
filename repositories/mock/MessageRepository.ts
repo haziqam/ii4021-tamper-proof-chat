@@ -1,7 +1,7 @@
 import * as dummyDb from './dummy/dummyDb'
 import { v4 as uuidv4 } from 'uuid'
 import { MessageModel } from '@/models/Message'
-import { IMessageRepository } from '../IMessageRepository'
+import { IMessageRepository } from '../interface/IMessageRepository'
 
 export class MessageRepository implements IMessageRepository {
     async getMessages(

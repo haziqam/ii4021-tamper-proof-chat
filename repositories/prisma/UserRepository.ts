@@ -2,7 +2,7 @@ import { prisma } from "./prisma"
 
 import { ChatroomModel } from "@/models/Chatroom";
 import { UserModel } from "@/models/User";
-import { IUserRepository } from "../IUserRepository";
+import { IUserRepository } from "../interface/IUserRepository";
 
 export class UserRepository implements IUserRepository {
     async create(user: Omit<UserModel, "id">): Promise<UserModel> {
@@ -30,21 +30,30 @@ export class UserRepository implements IUserRepository {
             skip: (page - 1) * size
         });
     }
-    async listUserChatrooms(id: string): Promise<ChatroomModel[]> {
-        return await prisma.chatroom.findMany({
-            include: {
-                pages: {
-                    where: {
-                        isLastSequence: true
+    async listUserChatrooms(id: string, lastMessage: boolean = true): Promise<ChatroomModel[]> {
+        if (lastMessage) {
+            return await prisma.chatroom.findMany({
+                include: {
+                    pages: {
+                        where: {
+                            isLastSequence: true
+                        }
+                    }
+                },
+                where: {
+                    userIds: {
+                        has: id
                     }
                 }
-            },
-            where: {
-                userIds: {
-                    has: id
+            });
+        } else {
+            return await prisma.chatroom.findMany({
+                where: {
+                    userIds: {
+                        has: id
+                    }
                 }
-            }
-        });
+            });
+        }
     }
-
 }

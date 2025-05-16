@@ -1,5 +1,5 @@
 import { UserModel } from '@/models/User'
-import { IUserRepository } from '../IUserRepository'
+import { IUserRepository } from '../interface/IUserRepository'
 import * as dummyDb from './dummy/dummyDb'
 import { v4 as uuidv4 } from 'uuid'
 import { ChatroomModel } from '@/models/Chatroom'

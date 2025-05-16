@@ -1,3 +1,5 @@
+import { ChatPageModel } from "./Message"
+
 export type ChatroomModel = {
     id: string
     members: {
@@ -5,4 +7,5 @@ export type ChatroomModel = {
         publicKey: string
     }[]
     createdAt: Date
+    pages?: ChatPageModel[]
 }

@@ -1,7 +1,7 @@
 import { prisma } from "./prisma"
 
 import { MessageModel } from "@/models/Message";
-import { IMessageRepository } from "../IMessageRepository";
+import { IMessageRepository } from "../interface/IMessageRepository";
 
 export class MessageRepository implements IMessageRepository {
     async getMessages(chatroomId: string, chunkSequence: number): Promise<MessageModel[]> {

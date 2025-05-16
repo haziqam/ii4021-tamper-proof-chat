@@ -1,7 +1,7 @@
 import { ChatroomModel } from '@/models/Chatroom'
 import * as dummyDb from './dummy/dummyDb'
 import { v4 as uuidv4 } from 'uuid'
-import { IChatroomRepository } from '../IChatroomRepository'
+import { IChatroomRepository } from '../interface/IChatroomRepository'
 import { MessageChunkModel } from '@/models/Message'
 
 export class ChatroomRepository implements IChatroomRepository {
