@@ -6,7 +6,6 @@ import { MessageRepository } from "./MessageRepository";
 
 export class ChatroomRepository implements IChatroomRepository {
     async create (chatroom: Omit<ChatroomModel, "id">): Promise<ChatroomModel> {
-        const messageRepository = new MessageRepository()
         const newChatroom = await prisma.chatroom.create({
             data: chatroom
         });

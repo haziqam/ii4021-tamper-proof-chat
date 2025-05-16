@@ -32,6 +32,13 @@ export class UserRepository implements IUserRepository {
     }
     async listUserChatrooms(id: string): Promise<ChatroomModel[]> {
         return await prisma.chatroom.findMany({
+            include: {
+                pages: {
+                    where: {
+                        isLastSequence: true
+                    }
+                }
+            },
             where: {
                 userIds: {
                     has: id
