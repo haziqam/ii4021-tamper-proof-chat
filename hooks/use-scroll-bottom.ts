@@ -1,20 +1,64 @@
 import { Message } from '@/types/chat'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { usePrevious } from './use-previous'
 
 export function useScrollBottom(messages: Message[]) {
+    const prevMessages = usePrevious(messages)
     const bottomElementRef = useRef<HTMLDivElement>(null)
-    const scrollToBottom = () => {
-        console.log('autoscrolling to the bottom')
+    const prevFirstMessageRef = useRef<HTMLDivElement>(null)
+    const [prevFirstMessageSentAt, setPrevFirstMessageSentAt] =
+        useState<Date | null>(null)
+    const [initialScrollDone, setInitialScrollDone] = useState(false)
+
+    const scrollToBottom = (behavior: ScrollBehavior = 'instant') => {
         bottomElementRef.current?.scrollIntoView({
-            behavior: 'instant',
+            behavior,
             block: 'end',
-            inline: 'nearest',
+        })
+    }
+
+    const scrollToPrevFirstMessage = () => {
+        prevFirstMessageRef.current?.scrollIntoView({
+            behavior: 'instant',
+            block: 'start',
         })
     }
 
     useEffect(() => {
-        scrollToBottom()
+        if (!messages.length) return
+
+        const isInitial = !initialScrollDone
+        const isOlderMessagesLoaded =
+            prevMessages &&
+            messages.length > prevMessages.length &&
+            prevMessages[prevMessages.length - 1]?.sentAt ===
+                messages[messages.length - 1]?.sentAt
+
+        const isNewMessageAdded =
+            prevMessages &&
+            messages[messages.length - 1]?.sentAt !==
+                prevMessages[prevMessages.length - 1]?.sentAt
+
+        if (isInitial) {
+            scrollToBottom('instant')
+            setInitialScrollDone(true)
+        } else if (isOlderMessagesLoaded && prevMessages?.[0]) {
+            setPrevFirstMessageSentAt(prevMessages[0].sentAt)
+        } else if (isNewMessageAdded) {
+            scrollToBottom('smooth')
+        }
     }, [messages])
 
-    return { bottomElementRef, scrollToBottom }
+    useEffect(() => {
+        if (prevFirstMessageSentAt) {
+            scrollToPrevFirstMessage()
+            setPrevFirstMessageSentAt(null) // reset after scrolling
+        }
+    }, [prevFirstMessageSentAt])
+
+    return {
+        bottomElementRef,
+        prevFirstMessageRef,
+        prevFirstMessageSentAt,
+    }
 }

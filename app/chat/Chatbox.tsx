@@ -57,7 +57,8 @@ function ChatboxHeader() {
 function ChatboxContent() {
     const { activeChatroom, loadOlderMessages } = useChatStore()
     const messages = activeChatroom?.lastMessages ?? []
-    const { bottomElementRef, scrollToBottom } = useScrollBottom(messages)
+    const { bottomElementRef, prevFirstMessageRef, prevFirstMessageSentAt } =
+        useScrollBottom(messages)
     const userInfo = useUserInfo()
 
     const firstMessageRef = useRef<HTMLDivElement | null>(null)
@@ -71,45 +72,43 @@ function ChatboxContent() {
                 if (activeChatroom?.oldestLoadedChunkSequence === 1) return
                 await loadOlderMessages()
             },
-            {
-                root: null, // viewport
-                threshold: 0.1, // adjust if needed
-            }
+            { root: null, threshold: 0.1 }
         )
 
         observer.observe(firstMessageRef.current)
-
-        return () => {
-            observer.disconnect()
-        }
+        return () => observer.disconnect()
     }, [activeChatroom])
 
     return (
         <div className="flex-1 p-4 space-y-2 bg-gray-100 overflow-y-auto">
-            {messages.map((msg, idx) => (
-                <div
-                    className={`w-full flex ${
-                        msg.senderUsername === userInfo?.username
-                            ? 'justify-end'
-                            : 'justify-start'
-                    }`}
-                    key={`${'messages' + msg.sentAt + '-' + idx}`}
-                    ref={
-                        idx === 0
-                            ? firstMessageRef
-                            : idx === messages.length - 1
-                              ? bottomElementRef
-                              : null
-                    }
-                >
-                    <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
-                        <div className="text-sm font-semibold">
-                            {msg.senderUsername}
+            {messages.map((msg, idx) => {
+                const isFirst = idx === 0
+                const isLast = idx === messages.length - 1
+                const isPrevFirst = msg.sentAt === prevFirstMessageSentAt
+
+                return (
+                    <div
+                        className={`w-full flex ${
+                            msg.senderUsername === userInfo?.username
+                                ? 'justify-end'
+                                : 'justify-start'
+                        }`}
+                        key={`${'messages' + msg.sentAt + '-' + idx}`}
+                        ref={(el) => {
+                            if (isFirst) firstMessageRef.current = el
+                            if (isPrevFirst) prevFirstMessageRef.current = el
+                            if (isLast) bottomElementRef.current = el
+                        }}
+                    >
+                        <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
+                            <div className="text-sm font-semibold">
+                                {msg.senderUsername}
+                            </div>
+                            <div>{msg.message}</div>
                         </div>
-                        <div>{msg.message}</div>
                     </div>
-                </div>
-            ))}
+                )
+            })}
         </div>
     )
 }
