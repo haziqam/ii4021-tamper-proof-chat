@@ -19,8 +19,8 @@ export function useScrollBottom(messages: Message[]) {
 
     const scrollToPrevFirstMessage = () => {
         prevFirstMessageRef.current?.scrollIntoView({
-            behavior: 'instant',
-            block: 'start',
+            behavior: 'auto',
+            block: 'end',
         })
     }
 

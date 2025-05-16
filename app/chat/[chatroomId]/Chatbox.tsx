@@ -82,69 +82,37 @@ function ChatboxContent() {
 
     const containerRef = useRef<HTMLDivElement | null>(null)
     const firstMessageRef = useRef<HTMLDivElement | null>(null)
-
-    const [isScrollable, setIsScrollable] = useState(false)
-    const manualLoadInProgressRef = useRef(false)
-
-    useEffect(() => {
-        if (!firstMessageRef.current || !containerRef.current) return
-
-        const container = containerRef.current
-
-        const observer = new IntersectionObserver(
-            async ([entry]) => {
-                if (!entry.isIntersecting) return
-                if (oldestLoadedPageSequence === 1) return
-                if (manualLoadInProgressRef.current) return // 🚫 Skip if manual loading
-
-                const scrollable =
-                    container.scrollHeight > container.clientHeight + 20 // 20px tolerance
-                setIsScrollable(scrollable)
-
-                if (scrollable) {
-                    await loadOlderMessages(chatroomId)
-                }
-            },
-            { root: container, threshold: 0.1 }
-        )
-
-        observer.observe(firstMessageRef.current)
-
-        return () => observer.disconnect()
-    }, [lastMessages, chatroomId, oldestLoadedPageSequence, loadOlderMessages])
+    const [loading, setLoading] = useState(false)
 
     const handleManualLoad = async () => {
-        if (oldestLoadedPageSequence && oldestLoadedPageSequence <= 1) return
-
-        manualLoadInProgressRef.current = true
+        if (
+            (oldestLoadedPageSequence && oldestLoadedPageSequence <= 1) ||
+            loading
+        )
+            return
+        setLoading(true)
         await loadOlderMessages(chatroomId)
-
-        // Give the DOM a bit of time to re-render before re-enabling auto-load
-        setTimeout(() => {
-            manualLoadInProgressRef.current = false
-        }, 100)
+        setLoading(false)
     }
 
     return (
         <div className="relative flex-1 bg-gray-100 overflow-hidden">
-            {/* Manual Load Button */}
-            {!isScrollable &&
-                oldestLoadedPageSequence &&
-                oldestLoadedPageSequence > 1 && (
-                    <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10">
-                        <button
-                            onClick={handleManualLoad}
-                            className="px-4 py-1 text-sm font-medium text-white bg-blue-500 rounded shadow hover:bg-blue-600"
-                        >
-                            Load older messages
-                        </button>
-                    </div>
-                )}
-
             <div
                 ref={containerRef}
                 className="h-full overflow-y-auto px-4 py-6 space-y-2"
             >
+                {oldestLoadedPageSequence && oldestLoadedPageSequence > 1 && (
+                    <div className="w-full flex justify-center pb-2">
+                        <button
+                            onClick={handleManualLoad}
+                            disabled={loading}
+                            className="px-4 py-1 text-sm font-medium text-white bg-blue-500 rounded shadow hover:bg-blue-600 disabled:opacity-50"
+                        >
+                            {loading ? 'Loading...' : 'Load older messages'}
+                        </button>
+                    </div>
+                )}
+
                 {lastMessages.map((msg, idx) => {
                     const isFirst = idx === 0
                     const isLast = idx === lastMessages.length - 1
