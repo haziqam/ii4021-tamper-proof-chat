@@ -22,7 +22,5 @@ export async function getChatroomList(): Promise<GetChatroomListResponse> {
 
     const userId = jwtPayload.userId
     const chatroomList = await userRepository.listUserChatrooms(userId)
-    console.log('getChatroomList2::chatroomList')
-    console.dir(chatroomList, { depth: null })
     return { chatroomList }
 }
