@@ -40,14 +40,11 @@ export function useScrollBottom(messages: Message[]) {
                 prevMessages[prevMessages.length - 1]?.sentAt
 
         if (isInitial) {
-            console.log('isInitial')
             scrollToBottom('instant')
             setInitialScrollDone(true)
         } else if (isOlderMessagesLoaded && prevMessages?.[0]) {
-            console.log('olderMessagesLoaded')
             setPrevFirstMessageSentAt(prevMessages[0].sentAt)
         } else if (isNewMessageAdded) {
-            console.log('newMessageAdded')
             scrollToBottom('smooth')
         }
     }, [messages])
@@ -55,7 +52,7 @@ export function useScrollBottom(messages: Message[]) {
     useEffect(() => {
         if (prevFirstMessageSentAt) {
             scrollToPrevFirstMessage()
-            setPrevFirstMessageSentAt(null) // reset after scrolling
+            setPrevFirstMessageSentAt(null)
         }
     }, [prevFirstMessageSentAt])
 
