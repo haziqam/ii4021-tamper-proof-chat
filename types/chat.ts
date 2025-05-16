@@ -14,6 +14,7 @@ export type Chatroom = {
 
 export type Message = {
     senderUsername: string
+    receiverUsername: string
     message: string
     sentAt: Date
 }
@@ -28,7 +29,7 @@ export type ChatroomDetail = {
     members: ChatroomMember[]
     lastMessages: SignedMessage[]
     currentChunkSequence: number
-    oldestLoadedChunkSequence?: number
+    oldestLoadedChunkSequence: number
 }
 
 export type ChatroomMember = {

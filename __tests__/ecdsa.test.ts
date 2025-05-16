@@ -5,7 +5,7 @@ import { verifySignedMessage } from '@/use-cases/verifyMessage'
 
 const ec = new EC('secp256k1')
 
-describe('ECDSA signing and verification', () => {
+describe('`ECDSA` signing and verification', () => {
     const keyPair = ec.genKeyPair()
     const privateKey = keyPair.getPrivate('hex')
     const publicKey = keyPair.getPublic('hex')

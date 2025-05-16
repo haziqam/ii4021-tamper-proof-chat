@@ -45,7 +45,11 @@ export class UserRepository implements IUserRepository {
         return userChatrooms
     }
 
-    async list(page: number, size: number): Promise<UserModel[]> {
+    async list(
+        page: number,
+        size: number,
+        excludeId?: string
+    ): Promise<UserModel[]> {
         const start = (page - 1) * size
         return dummyDb.users.slice(start, start + size)
     }

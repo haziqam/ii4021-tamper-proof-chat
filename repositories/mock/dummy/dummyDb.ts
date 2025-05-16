@@ -102,10 +102,10 @@ global.__mockDb = global.__mockDb || {
             id: 'd1cccc3e-6116-4447-bc7f-29eb9c6606c7',
             chatroomId: '72944dc3-ae31-4d84-8e81-dcdf1c85abf7',
             createdAt: new Date(),
-            chunkSequence: 1,
+            chunkSequence: 2,
             messages: [
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 1',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -116,7 +116,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 2',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -127,7 +127,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 3',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -138,7 +138,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 4',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -149,7 +149,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 5',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -160,7 +160,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 6',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -171,7 +171,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 7',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -182,7 +182,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 8',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -193,7 +193,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 9',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -204,7 +204,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 10',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -215,7 +215,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 11',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -226,7 +226,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 12',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -237,7 +237,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 13',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -248,7 +248,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 14',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -259,7 +259,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 15',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -270,7 +270,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world 16',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -289,7 +289,7 @@ global.__mockDb = global.__mockDb || {
             chunkSequence: 1,
             messages: [
                 {
-                    message: 'Hello world',
+                    message: 'Hello world a',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',
@@ -300,7 +300,7 @@ global.__mockDb = global.__mockDb || {
                     },
                 },
                 {
-                    message: 'Hello world',
+                    message: 'Hello world b',
                     messageHash: 'asdfasdfasdfasf',
                     senderUsername: 'haziqam',
                     receiverUsername: 'mfidelus1',

@@ -8,7 +8,13 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
-import { ChangeEventHandler, KeyboardEventHandler, useState } from 'react'
+import {
+    ChangeEventHandler,
+    KeyboardEventHandler,
+    useEffect,
+    useRef,
+    useState,
+} from 'react'
 import { signMessage } from '@/use-cases/signMessage'
 
 export function Chatbox() {
@@ -49,16 +55,37 @@ function ChatboxHeader() {
 }
 
 function ChatboxContent() {
-    const activeChatroom = useChatStore((state) => state.activeChatroom)
+    const { activeChatroom, loadOlderMessages } = useChatStore()
     const messages = activeChatroom?.lastMessages ?? []
-    const scrollRef = useScrollBottom(messages)
+    const { bottomElementRef, scrollToBottom } = useScrollBottom(messages)
     const userInfo = useUserInfo()
 
+    const firstMessageRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        if (!firstMessageRef.current) return
+
+        const observer = new IntersectionObserver(
+            async ([entry]) => {
+                if (!entry.isIntersecting) return
+                if (activeChatroom?.oldestLoadedChunkSequence === 1) return
+                await loadOlderMessages()
+            },
+            {
+                root: null, // viewport
+                threshold: 0.1, // adjust if needed
+            }
+        )
+
+        observer.observe(firstMessageRef.current)
+
+        return () => {
+            observer.disconnect()
+        }
+    }, [activeChatroom])
+
     return (
-        <div
-            className="flex-1 overflow-y-auto p-4 space-y-2 bg-gray-100"
-            ref={scrollRef}
-        >
+        <div className="flex-1 p-4 space-y-2 bg-gray-100 overflow-y-auto">
             {messages.map((msg, idx) => (
                 <div
                     className={`w-full flex ${
@@ -67,6 +94,13 @@ function ChatboxContent() {
                             : 'justify-start'
                     }`}
                     key={`${'messages' + msg.sentAt + '-' + idx}`}
+                    ref={
+                        idx === 0
+                            ? firstMessageRef
+                            : idx === messages.length - 1
+                              ? bottomElementRef
+                              : null
+                    }
                 >
                     <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
                         <div className="text-sm font-semibold">
@@ -82,11 +116,16 @@ function ChatboxContent() {
 
 function ChatboxInputText() {
     const addNewMessages = useChatStore((state) => state.addNewMessages)
-
     const activeChatroom = useChatStore((state) => state.activeChatroom)
     const activeChatroomId = activeChatroom?.id
     const [messageInput, setMessageInput] = useState('')
     const userInfo = useUserInfo()
+
+    if (!userInfo || !activeChatroom) return null
+
+    const peerUsername = activeChatroom.members.find(
+        (member) => member.username !== userInfo.username
+    )?.username!
 
     const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setMessageInput(e.target.value)
@@ -100,6 +139,7 @@ function ChatboxInputText() {
         const message = {
             message: trimmed,
             senderUsername: userInfo.username,
+            receiverUsername: peerUsername,
             sentAt: new Date(),
         }
 
