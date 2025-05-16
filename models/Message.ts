@@ -1,6 +1,7 @@
+import { JsonValue } from "@/generated/prisma/runtime/library"
+
 export type MessageModel = {
-    senderUsername: string
-    receiverUsername: string
+    sender: string
     message: string
     sentAt: Date
     messageHash: string
@@ -10,10 +11,9 @@ export type MessageModel = {
     }
 }
 
-export type MessageChunkModel = {
+export type ChatPageModel = {
     id: string
     chatroomId: string
-    chunkSequence: number // local to chatroomId
-    createdAt: Date
+    pageSequence: number // local to chatroomId
     messages: MessageModel[]
 }

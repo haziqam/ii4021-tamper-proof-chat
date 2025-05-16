@@ -15,28 +15,49 @@ datasource db {
 }
 
 model User {
-  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   username    String
   password    String
   publicKey   String
-  chatroomIDs String[]   @db.ObjectId
-  chatrooms   Chatroom[] @relation(fields: [chatroomIDs], references: [id])
+  chatroomIds String[] @db.ObjectId
 }
 
 model Chatroom {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  userIDs  String[]  @db.ObjectId
-  users    User[]    @relation(fields: [userIDs], references: [id])
-  messages Message[]
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  userIds      String[]     @db.ObjectId
+  members      PublicUser[]
+  createdAt    DateTime     @default(now()) @db.Timestamp
+  pages        ChatPage[]
+
+  @@unique([userIds])
 }
 
-model Message {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  message    String
-  hash       String
-  signature  String
-  sentAt     DateTime
-  readAt     DateTime
-  Chatroom   Chatroom? @relation(fields: [chatroomId], references: [id])
-  chatroomId String?   @db.ObjectId
+model ChatPage {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  pageSequence   Int
+  isLastSequence Boolean   @default(true)
+  messages       Message[]
+  chatroomId     String    @db.ObjectId
+  Chatroom       Chatroom  @relation(fields: [chatroomId], references: [id])
+
+  @@unique([chatroomId, pageSequence])
+  @@unique([chatroomId, isLastSequence])
+}
+
+type Message {
+  sender      String
+  message     String
+  sentAt      DateTime
+  messageHash String
+  signature   Signature
+}
+
+type Signature {
+  r String
+  s String
+}
+
+type PublicUser {
+  username  String
+  publicKey String
 }
