@@ -1,8 +1,15 @@
 import { prisma } from "./prisma"
 
-import { ChatroomModel } from "@/models/Chatroom";
+import { ChatroomModel, PublicUserModel } from "@/models/Chatroom";
 import { IChatroomRepository } from "../interface/IChatroomRepository";
-import { use } from "react";
+import { UserModel } from "@/models/User";
+
+function transformPublicMember(user: UserModel): PublicUserModel {
+    return {
+        username: user.username,
+        publicKey: user.publicKey
+    }
+}
 
 export class ChatroomRepository implements IChatroomRepository {
     async create(userIds: string[]): Promise<ChatroomModel> {
@@ -16,7 +23,7 @@ export class ChatroomRepository implements IChatroomRepository {
         const newChatroom = await prisma.chatroom.create({
             data: {
                 userIds: userIds,
-                members: users
+                members: users.map(transformPublicMember)
             }
         });
         await prisma.chatPage.create({
