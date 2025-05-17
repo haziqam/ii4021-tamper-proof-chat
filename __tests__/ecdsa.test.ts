@@ -10,7 +10,7 @@ describe('`ECDSA` signing and verification', () => {
     const privateKey = keyPair.getPrivate('hex')
     const publicKey = keyPair.getPublic('hex')
 
-    const message: Message = {
+    const message: Omit<Message, 'id'> = {
         senderUsername: 'alice',
         receiverUsername: 'bob',
         message: 'Hello Bob!',
