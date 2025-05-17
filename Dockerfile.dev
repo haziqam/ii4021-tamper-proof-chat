@@ -4,10 +4,12 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-RUN npm install
+RUN npm install --force --loglevel verbose
 
 EXPOSE 3000
 
+EXPOSE 9999
+
 ENV PORT=3000
 
-CMD ["sh", "-c", "npx prisma generate && npm run dev"]
+CMD ["sh", "-c", "npx prisma generate && npm run dev & npm run socket"]
