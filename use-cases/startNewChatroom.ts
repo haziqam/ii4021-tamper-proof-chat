@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { jwtVerify } from 'jose'
-import { AccessTokenPayload } from '@/middleware'
+import { AccessTokenPayload } from '@/jwt/access-token'
 import { chatroomRepository } from '@/repositories/prisma/repositories'
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!)

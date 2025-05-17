@@ -1,29 +1,41 @@
 import express from 'express'
 import http from 'http'
 import { Server as SocketIOServer, Socket } from 'socket.io'
-import cookie from 'cookie' // npm install cookie
+import cookie from 'cookie'
+import { jwtVerify } from 'jose'
+import { AccessTokenPayload } from '@/jwt/access-token'
 
 const app = express()
 const server = http.createServer(app)
+
+const APP_DOMAIN = process.env.APP_DOMAIN ?? 'http://localhost:3000'
+const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
+
 export const io = new SocketIOServer(server, {
     cors: {
-        origin: '*',
+        origin: APP_DOMAIN,
+        credentials: true,
     },
 })
-const port = 9999
-
-io.on('connection', (socket: Socket) => {
-    console.log('New user connected')
-
-    // Parse and log cookies
+const port = 54876
+io.on('connection', async (socket: Socket) => {
     const rawCookie = socket.handshake.headers.cookie
     const parsedCookies = cookie.parse(rawCookie || '')
-    console.log('Cookies:', parsedCookies)
 
-    socket.on('createMessage', (message: any) => {
-        console.log('New message:', message)
-        io.emit('newMessage', message)
-    })
+    const accessToken = parsedCookies['access-token']
+    if (!accessToken) {
+        socket.disconnect()
+        return
+    }
+
+    try {
+        const decoded = await jwtVerify<AccessTokenPayload>(accessToken, secret)
+        const userId = decoded.payload.userId
+        socket.join(userId)
+    } catch (err) {
+        socket.disconnect()
+        return
+    }
 
     socket.on('disconnect', () => {
         console.log('User disconnected')

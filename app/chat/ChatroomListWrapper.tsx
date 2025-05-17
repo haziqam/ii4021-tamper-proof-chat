@@ -30,6 +30,11 @@ export function ChatroomListWrapper({ chatrooms }: { chatrooms: Chatroom[] }) {
             console.log('Disconnected from Socket.IO server')
         })
 
+        socket.on('message', (message) => {
+            console.log('Received message: ')
+            console.log(message)
+        })
+
         // Cleanup on unmount
         return () => {
             socket?.disconnect()
