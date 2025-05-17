@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation'
 import { useScrollBottom } from '@/hooks/use-scroll-bottom'
-import { useChatStore } from '@/state-stores/chat-store-2'
+import { useChatStore } from '@/state-stores/chat-store'
 import { useUserInfo } from '@/hooks/user-info-store'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
