@@ -17,7 +17,7 @@ export async function getChatroomMessages(
     payload: GetChatroomMessagesPayload
 ): Promise<GetChatroomMessagesResponse> {
     const { chatroomId, pageSequence } = payload
-    if (!pageSequence) {
+    if (pageSequence === undefined) {
         const { messages, pageSequence } =
             await messageRepository.getLastMessages(chatroomId)
         return { messages, pageSequence }
@@ -27,5 +27,7 @@ export async function getChatroomMessages(
         chatroomId,
         pageSequence
     )
+
+    console.log(`get messages: ${payload.pageSequence}, ${pageSequence}`)
     return { messages, pageSequence }
 }

@@ -89,7 +89,7 @@ function ChatboxContent() {
 
     const handleLoadOlderMessages = async () => {
         if (
-            (oldestLoadedPageSequence && oldestLoadedPageSequence <= 1) ||
+            (oldestLoadedPageSequence && oldestLoadedPageSequence <= 0) ||
             loading
         )
             return
@@ -126,7 +126,7 @@ function ChatboxContent() {
                 ref={containerRef}
                 className="h-full overflow-y-auto px-4 py-6 space-y-2"
             >
-                {oldestLoadedPageSequence && oldestLoadedPageSequence > 1 ? (
+                {oldestLoadedPageSequence && oldestLoadedPageSequence > 0 ? (
                     <div className="w-full flex justify-center pb-2">
                         <button
                             onClick={handleLoadOlderMessages}

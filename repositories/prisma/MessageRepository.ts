@@ -44,7 +44,7 @@ export class MessageRepository implements IMessageRepository {
 
     async addMessage(chatroomId: string, message: Omit<MessageModel, "id">): Promise<MessageModel> {
         return await prisma.$transaction(async (tx) => {
-            const lastPage = await tx.chatPage.findUnique({
+            const lastPage = await tx.chatPage.findUniqueOrThrow({
                 where: {
                     chatroomId_isLastSequence: {
                         chatroomId: chatroomId,
@@ -56,40 +56,41 @@ export class MessageRepository implements IMessageRepository {
                     messageCount: true
                 }
             });
-            // append message to existing page if exist or not full
-            if (lastPage ? (lastPage.messageCount < MAX_MESSAGE_PER_PAGE) : false) {
-                const updateQuery: Prisma.ChatPageUpdateArgs = {
-                    where: {
-                        chatroomId_isLastSequence: {
-                            chatroomId: chatroomId,
-                            isLastSequence: true
-                        }
-                    },
-                    data: {
-                        messageCount: {
-                            increment: 1
-                        },
-                        messages: {
-                            push: message
-                        }
+            let newPage = false;
+            // append message to existing page if not full
+            let updateQuery: Prisma.ChatPageUpdateArgs = {
+                where: {
+                    chatroomId_isLastSequence: {
+                        chatroomId: chatroomId,
+                        isLastSequence: true
                     }
-                };
-                const result = await tx.chatPage.update(updateQuery);
-                return transformMessages(result.id, result.messages).at(-1)!;
-            } else { // if no page exist yet or previous page is full, create new page
-                const newPageSequence = lastPage ? (lastPage.messageCount + 1) : 0
-
-                const result = await tx.chatPage.create({
+                },
+                data: {
+                    messageCount: {
+                        increment: 1
+                    },
+                    messages: {
+                        push: message
+                    }
+                }
+            };
+            if (lastPage!.messageCount + 1 === MAX_MESSAGE_PER_PAGE) {
+                updateQuery.data.isLastSequence = false;
+                newPage = true;
+            }
+            const chatPage = await tx.chatPage.update(updateQuery);
+            if (newPage) { // if no page exist yet or previous page is full, create new page
+                await tx.chatPage.create({
                     data: {
-                        pageSequence: newPageSequence,
+                        pageSequence: lastPage.pageSequence + 1,
                         isLastSequence: true,
-                        messageCount: 1,
-                        messages: [message],
+                        messageCount: 0,
+                        messages: [],
                         chatroomId: chatroomId,
                     }
                 });
-                return transformMessages(result.id, result.messages).at(-1)!;
             }
+            return transformMessages(chatPage.id, chatPage.messages).at(-1)!;
         })
     }
 }

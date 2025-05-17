@@ -48,15 +48,17 @@ export function joinChatroomWithLastMessages(chatrooms: ChatroomModel[], lastPag
     const chatroomMap: { [id: string]: number } = {}
     chatrooms.forEach((chatroom, index) => {
         chatroomMap[chatroom.id] = index
-    })
+    });
     lastPages.forEach((page) => {
-        const lastMessageIndex = page.messages.length
-        const chatroomIndex = chatroomMap[page.chatroomId]
-        chatrooms[chatroomIndex].lastMessage = transformMessage(
-            page.id,
-            page.messages[lastMessageIndex],
-            lastMessageIndex
-        )
-    })
+        const lastMessageIndex = page.messages.length - 1
+        if (lastMessageIndex >= 0) {
+            const chatroomIndex = chatroomMap[page.chatroomId]
+            chatrooms[chatroomIndex].lastMessage = transformMessage(
+                page.id,
+                page.messages[lastMessageIndex],
+                lastMessageIndex
+            )
+        }
+    });
     return chatrooms
 }

@@ -37,7 +37,7 @@ export class ChatroomRepository implements IChatroomRepository {
         await prisma.chatPage.create({
             data: {
                 chatroomId: chatroom.id,
-                pageSequence: 0,
+                messageCount: 0,
                 messages: []
             }
         });
