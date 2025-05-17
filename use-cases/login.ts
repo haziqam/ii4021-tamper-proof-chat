@@ -1,33 +1,60 @@
 'use server'
+
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
+import { SignJWT } from 'jose'
 import { userRepository } from '@/repositories/prisma/repositories'
 
-interface RegisterPayload {
+interface LoginPayload {
     username: string
     password: string
-    confirmPassword: string
-    publicKey: string
 }
 
-export async function register(payload: RegisterPayload) {
-    const { username, password, confirmPassword, publicKey } = payload
+const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 
-    const existingUser = await userRepository.getByUsername(payload.username)
+export async function login(payload: LoginPayload) {
+    const user = await userRepository.getByUsername(payload.username)
 
     // TODO: handle error in real implementation
-    if (existingUser) {
+    if (!user) {
+        console.log('User not found')
         return
     }
 
-    if (password !== confirmPassword) {
+    // TODO: check with hash + salt in the real implementation and throw/return error if not match
+    if (user.password !== payload.password) {
+        console.log('Passwords not match')
         return
     }
 
-    await userRepository.create({
-        username,
-        password,
-        publicKey,
+    const cookieStore = await cookies()
+
+    const token = await new SignJWT({ userId: user.id })
+        .setProtectedHeader({ alg: 'HS256' })
+        .setIssuedAt()
+        .setExpirationTime('1d')
+        .sign(secret)
+
+    cookieStore.set({
+        name: 'access-token',
+        value: token,
+        httpOnly: true,
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 60 * 60 * 24,
     })
 
-    redirect('/login')
+    const userInfo = {
+        userId: user.id,
+        username: user.username,
+        publicKey: user.publicKey,
+    }
+
+    cookieStore.set('user-info', JSON.stringify(userInfo), {
+        httpOnly: false,
+        path: '/',
+        maxAge: 60 * 60 * 24,
+    })
+
+    redirect('/')
 }
