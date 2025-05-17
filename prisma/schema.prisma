@@ -19,17 +19,19 @@ model User {
   username    String
   password    String
   publicKey   String
-  chatroomIds String[] @db.ObjectId
+  chatroomIds String[] @default([]) @db.ObjectId
+
+  @@unique(username)
 }
 
 model Chatroom {
-  id           String       @id @default(auto()) @map("_id") @db.ObjectId
-  userIds      String[]     @db.ObjectId
-  members      PublicUser[]
-  createdAt    DateTime     @default(now()) @db.Timestamp
-  pages        ChatPage[]
+  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  userIds   String[]     @db.ObjectId
+  members   PublicUser[]
+  createdAt DateTime     @default(now()) @db.Timestamp
+  pages     ChatPage[]
 
-  @@unique([userIds])
+  @@unique(userIds)
 }
 
 model ChatPage {
@@ -45,11 +47,12 @@ model ChatPage {
 }
 
 type Message {
-  sender      String
-  message     String
-  sentAt      DateTime
-  messageHash String
-  signature   Signature
+  senderUsername   String
+  receiverUsername String
+  message          String
+  sentAt           DateTime
+  messageHash      String
+  signature        Signature
 }
 
 type Signature {

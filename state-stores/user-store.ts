@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { User } from '@/types/user'
-import { findUserByUsername } from '@/use-cases/mock/findUserByUsername'
-import { findUsers } from '@/use-cases/mock/findUsers'
+import { findUserByUsername } from '@/use-cases/findUserByUsername'
+import { findUsers } from '@/use-cases/findUsers'
 
 interface UsersState {
     users: User[]

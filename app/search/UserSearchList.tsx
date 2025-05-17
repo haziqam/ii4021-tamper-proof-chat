@@ -14,7 +14,7 @@ export function UserSearchList() {
             {users.map((user, idx) => (
                 <UserListItem
                     user={user}
-                    key={`${'userlist' + user.userId + '-' + idx}`}
+                    key={`${'userlist' + user.id + '-' + idx}`}
                 />
             ))}
         </div>

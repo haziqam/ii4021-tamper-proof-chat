@@ -2,6 +2,35 @@ import { prisma } from "./prisma"
 
 import { MessageModel } from "@/models/Message";
 import { IMessageRepository } from "../interface/IMessageRepository";
+import { Prisma } from "@/generated/prisma";
+
+type message = {
+    senderUsername: string;
+    receiverUsername: string;
+    message: string;
+    sentAt: Date;
+    messageHash: string;
+    signature: {
+        r: string;
+        s: string;
+    };
+}
+
+function transformMessage(pageId: string, message: message, index: number): MessageModel {
+    return {
+        id: `${pageId}-${index}`,
+        senderUsername: message.senderUsername,
+        receiverUsername: message.receiverUsername,
+        message: message.message,
+        sentAt: message.sentAt,
+        messageHash: message.messageHash,
+        signature: message.signature
+    }
+}
+
+function transformMessages(pageId: string, message: message[]): MessageModel[] {
+        return message.map(transformMessage.bind(null, pageId))
+    }
 
 export class MessageRepository implements IMessageRepository {
     async getMessages(chatroomId: string, chunkSequence: number): Promise<MessageModel[]> {
@@ -13,25 +42,29 @@ export class MessageRepository implements IMessageRepository {
                 }
             },
             select: {
+                id: true,
                 messages: true
             }
         });
-        return result.messages;
+        return transformMessages(result.id, result.messages);
     }
 
-    async getLastMessages(chatroomId: string): Promise<{ messages: MessageModel[]; chunkSequence: number; }> {
-        const message = await prisma.chatPage.findUniqueOrThrow({
+    async getLastMessages(chatroomId: string): Promise<{ messages: MessageModel[]; pageSequence: number; }> {
+        let chatPage = await prisma.chatPage.findUniqueOrThrow({
             where: {
                 chatroomId_isLastSequence: {
                     chatroomId: chatroomId,
                     isLastSequence: true
                 }
+            },
+            select: {
+                id: true,
+                messages: true,
+                pageSequence: true
             }
         });
-        return {
-            messages: message.messages,
-            chunkSequence: message.pageSequence
-        };
+        const transformedMessages = transformMessages(chatPage.id, chatPage.messages)
+        return {messages: transformedMessages, pageSequence: chatPage.pageSequence};
     }
 
     async addMessage(chatroomId: string, message: Omit<MessageModel, "id">, newPage: boolean = false): Promise<MessageModel> {
@@ -49,7 +82,7 @@ export class MessageRepository implements IMessageRepository {
                     }
                 }
             });
-            return result.messages.at(-1)!;
+            return transformMessages(result.id, result.messages).at(-1)!;
         } else {
             const lastPage = await prisma.chatPage.update({
                 where: {
@@ -70,7 +103,7 @@ export class MessageRepository implements IMessageRepository {
                     chatroomId: chatroomId,
                 }
             });
-            return result.messages.at(-1)!;
+            return transformMessages(result.id, result.messages).at(-1)!;
         }
     }
 }

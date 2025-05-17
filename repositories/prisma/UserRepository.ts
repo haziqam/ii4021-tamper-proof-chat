@@ -5,7 +5,7 @@ import { UserModel } from "@/models/User";
 import { IUserRepository } from "../interface/IUserRepository";
 
 export class UserRepository implements IUserRepository {
-    async create(user: Omit<UserModel, "id">): Promise<UserModel> {
+    async create(user: Omit<UserModel, "id"|"chatroomIds">): Promise<UserModel> {
         return await prisma.user.create({
             data: user
         });
@@ -18,7 +18,7 @@ export class UserRepository implements IUserRepository {
         });
     }
     async getByUsername(username: string): Promise<UserModel | null> {
-        return await prisma.user.findFirst({
+        return await prisma.user.findUnique({
             where: {
                 username: username
             }
@@ -55,5 +55,9 @@ export class UserRepository implements IUserRepository {
                 }
             });
         }
+    }
+
+    async countUsers(): Promise<number> {
+        return prisma.user.count()
     }
 }

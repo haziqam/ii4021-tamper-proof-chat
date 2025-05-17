@@ -19,7 +19,7 @@ import { useUserInfo } from '@/hooks/user-info-store'
 // import { useChatStore } from '@/state-stores/chat-store'
 import { useChatStore } from '@/state-stores/chat-store-2'
 import { Chatroom } from '@/types/chat'
-import { logout } from '@/use-cases/mock/logout'
+import { logout } from '@/use-cases/logout'
 import {
     DropdownMenu,
     DropdownMenuContent,

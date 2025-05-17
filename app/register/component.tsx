@@ -11,7 +11,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ChangeEventHandler, FormEventHandler, useState } from 'react'
-import { register } from '@/use-cases/mock/register'
+import { register } from '@/use-cases/register'
 import { generateKeyPair } from '@/use-cases/generateKeyPair'
 import { setPrivateKey } from '@/private-key-store/opfs'
 

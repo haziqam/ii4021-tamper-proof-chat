@@ -11,4 +11,5 @@ export interface IUserRepository {
         excludeId?: string
     ) => Promise<UserModel[]>
     listUserChatrooms: (id: string) => Promise<ChatroomModel[]>
+    countUsers: () => Promise<number>
 }

@@ -1,4 +1,4 @@
-import { findUsers } from '@/use-cases/mock/findUsers'
+import { findUsers } from '@/use-cases/findUsers'
 import { UserSearchWrapper } from './UserSearchWrapper'
 import { ReactNode } from 'react'
 import { DEFAULT_USERS_PER_PAGE } from './constants'

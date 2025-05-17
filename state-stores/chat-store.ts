@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { Chatroom, ChatroomDetail, SignedMessage } from '@/types/chat'
-import { getChatroomMessages } from '@/use-cases/mock/getChatroomMessages'
+import { getChatroomMessages } from '@/use-cases/getChatroomMessages'
 
 interface ChatState {
     chatrooms: Chatroom[]

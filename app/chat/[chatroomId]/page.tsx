@@ -1,4 +1,4 @@
-import { getChatroomMessages } from '@/use-cases/mock/getChatroomMessages'
+import { getChatroomMessages } from '@/use-cases/getChatroomMessages'
 import { Chatbox } from './Chatbox'
 
 interface ActiveChatPageProps {

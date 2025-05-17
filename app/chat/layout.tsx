@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { getChatroomList } from '@/use-cases/mock/getChatroomList'
+import { getChatroomList } from '@/use-cases/getChatroomList'
 import { ChatroomListWrapper } from './ChatroomListWrapper'
 
 export default async function ChatLayout({
