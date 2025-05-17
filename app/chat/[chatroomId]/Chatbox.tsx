@@ -195,7 +195,7 @@ function ReceivedMessageBubble(props: MessageBubbleProps) {
                     </div>
                 </div>
             </div>
-            <div>Sent at: {message.sentAt.toDateString()}</div>
+            <div>Sent at: {message.sentAt.toLocaleString()}</div>
             <div>Verified: {isVerified ? 'true' : 'false'}</div>
         </div>
     )
