@@ -1,38 +1,11 @@
 import { prisma } from "./prisma"
 
-import { MessageModel, ChatPageModel } from "@/models/Message";
+import { MessageModel } from "@/models/Message";
 import { IMessageRepository } from "../interface/IMessageRepository";
 import { Prisma } from "@/generated/prisma";
+import { transformMessages } from "./transform";
 
 const MAX_MESSAGE_PER_PAGE = 32
-
-type message = {
-    senderUsername: string;
-    receiverUsername: string;
-    message: string;
-    sentAt: Date;
-    messageHash: string;
-    signature: {
-        r: string;
-        s: string;
-    };
-}
-
-function transformMessage(pageId: string, message: message, index: number): MessageModel {
-    return {
-        id: `${pageId}-${index}`,
-        senderUsername: message.senderUsername,
-        receiverUsername: message.receiverUsername,
-        message: message.message,
-        sentAt: message.sentAt,
-        messageHash: message.messageHash,
-        signature: message.signature
-    }
-}
-
-function transformMessages(pageId: string, message: message[]): MessageModel[] {
-    return message.map(transformMessage.bind(null, pageId))
-}
 
 export class MessageRepository implements IMessageRepository {
     async getMessages(chatroomId: string, pageSequence: number): Promise<MessageModel[]> {

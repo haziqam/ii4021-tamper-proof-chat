@@ -18,8 +18,8 @@ services:
             - 3000:3000
         volumes:
             - /app/generated/prisma
-            - '/app/node_modules'
-            - 'dev_next:/app/.next'
+            - /app/node_modules
+            - /app/.next
             - './:/app/'
         env_file:
             - .env

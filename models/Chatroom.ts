@@ -1,13 +1,13 @@
-import { ChatPageModel } from "./Message"
+import { MessageModel } from "./Message"
 
 export type ChatroomModel = {
     id: string
     members: PublicUserModel[]
     createdAt: Date
-    pages?: ChatPageModel[]
+    lastMessage?: MessageModel
 }
 
 export type PublicUserModel = {
-        username: string
-        publicKey: string
-    }
+    username: string
+    publicKey: string
+}

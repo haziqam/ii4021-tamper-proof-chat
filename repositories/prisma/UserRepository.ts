@@ -3,9 +3,10 @@ import { prisma } from "./prisma"
 import { ChatroomModel } from "@/models/Chatroom";
 import { UserModel } from "@/models/User";
 import { IUserRepository } from "../interface/IUserRepository";
+import { joinChatroomWithLastMessages } from "./transform";
 
 export class UserRepository implements IUserRepository {
-    async create(user: Omit<UserModel, "id"|"chatroomIds">): Promise<UserModel> {
+    async create(user: Omit<UserModel, "id" | "chatroomIds">): Promise<UserModel> {
         return await prisma.user.create({
             data: user
         });
@@ -31,33 +32,36 @@ export class UserRepository implements IUserRepository {
         });
     }
     async listUserChatrooms(id: string, lastMessage: boolean = true): Promise<ChatroomModel[]> {
-        if (lastMessage) {
-            return await prisma.chatroom.findMany({
-                include: {
-                    pages: {
-                        where: {
-                            isLastSequence: true
-                        }
+        const { chatrooms, lastPages } = await prisma.$transaction(async (tx) => {
+            const chatrooms: ChatroomModel[] = await tx.chatroom.findMany({
+                where: {
+                    userIds: {
+                        has: id
                     }
+                }
+            });
+            const chatroomIds = chatrooms.map((value) => { return value.id })
+            const lastPages = await tx.chatPage.findMany({
+                where: {
+                    chatroomId: {
+                        in: chatroomIds
+                    },
+                    isLastSequence: true
                 },
-                where: {
-                    userIds: {
-                        has: id
-                    }
+                select: {
+                    id: true,
+                    chatroomId: true,
+                    messages: true
                 }
             });
-        } else {
-            return await prisma.chatroom.findMany({
-                where: {
-                    userIds: {
-                        has: id
-                    }
-                }
-            });
-        }
+
+            return { chatrooms, lastPages };
+        });
+
+        return joinChatroomWithLastMessages(chatrooms, lastPages)
     }
 
     async countUsers(): Promise<number> {
-        return prisma.user.count()
+        return prisma.user.count();
     }
 }
