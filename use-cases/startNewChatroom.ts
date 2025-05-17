@@ -12,12 +12,13 @@ interface StartChatroomPayload {
     targetId: string
 }
 
-export async function startChatroom(
+export async function startNewChatroom(
     payload: StartChatroomPayload
 ): Promise<void> {
     const cookieStore = await cookies()
     const token = cookieStore.get('access-token')?.value!
-    const jwtPayload = (await jwtVerify<AccessTokenPayload>(token, secret)).payload
+    const jwtPayload = (await jwtVerify<AccessTokenPayload>(token, secret))
+        .payload
 
     const userId = jwtPayload.userId
 

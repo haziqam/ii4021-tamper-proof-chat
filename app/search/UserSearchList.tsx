@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { useUserStore } from '@/state-stores/user-store'
 import { User } from '@/types/user'
+import { startNewChatroom } from '@/use-cases/startNewChatroom'
 import { MouseEventHandler } from 'react'
 
 export function UserSearchList() {
@@ -28,8 +29,8 @@ interface UserListItemProps {
 function UserListItem(props: UserListItemProps) {
     const { user } = props
 
-    const handleClick: MouseEventHandler<HTMLDivElement> = () => {
-        console.log('Im clicked')
+    const handleClick: MouseEventHandler<HTMLDivElement> = async () => {
+        await startNewChatroom({ targetId: user.id })
     }
 
     return (
