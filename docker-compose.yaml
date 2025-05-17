@@ -1,75 +1,75 @@
 services:
-  app-staging:
-    build:
-      context: ./
-      dockerfile: ./Dockerfile
-    profiles: [ "staging" ]
-    ports:
-      - 3000:3000
-    env_file:
-      - .env
+    app-staging:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        profiles: ['staging']
+        ports:
+            - 3000:3000
+        env_file:
+            - .env
 
-  app-dev:
-    build:
-      context: ./
-      dockerfile: ./Dockerfile.dev
-    profiles: [ "dev" ]
-    ports:
-      - 3000:3000
-    volumes:
-      - /app/generated/prisma
-      - "dev_node_modules:/app/node_modules"
-      - "dev_next:/app/.next"
-      - "./:/app/"
-    env_file:
-      - .env
-    environment:
-      - MONGODB_ADDRESS=${MONGODB_ADDRESS:-172.16.100.101}
-      - MONGODB_PORT=${MONGODB_PORT:-27017}
-    networks:
-      dev-network:
-        ipv4_address: 172.16.100.100
+    app-dev:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile.dev
+        profiles: ['dev']
+        ports:
+            - 3000:3000
+        volumes:
+            - /app/generated/prisma
+            - '/app/node_modules'
+            - 'dev_next:/app/.next'
+            - './:/app/'
+        env_file:
+            - .env
+        environment:
+            - MONGODB_ADDRESS=${MONGODB_ADDRESS:-172.16.100.101}
+            - MONGODB_PORT=${MONGODB_PORT:-27017}
+        networks:
+            dev-network:
+                ipv4_address: 172.16.100.100
 
-  db-dev:
-    image: mongo:8.0.9-noble
-    profiles: [ "dev" ]
-    entrypoint:
-      - bash
-      - -c
-      - |
-          cp /data/dummy.key /data/replica.key
-          chmod 400 /data/replica.key
-          chown 999:999 /data/replica.key
-          exec docker-entrypoint.sh "$$@"
-    command: mongod --replSet rs0 --bind_ip ${MONGODB_ADDRESS:-172.16.100.101} --port ${MONGODB_PORT:-27017} --keyFile /data/replica.key
-    restart: unless-stopped
-    healthcheck:
-      test: mongosh "mongodb://${MONGODB_ADDRESS:-172.16.100.101}:${MONGODB_PORT:-27017}" --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD} --eval 'try { rs.status() } catch(err) { rs.initiate() }' || exit 1
-      interval: 30s
-      timeout: 10s
-      start_period: 30s
-      retries: 5
-    # ports:
-    #   - ${MONGODB_PORT:-27017}:27017
-    logging:
-      options:
-        max-size: 1g
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-    networks:
-      dev-network:
-        ipv4_address: ${MONGODB_ADDRESS:-172.16.100.101}
-    volumes:
-      - "./dummy.key:/data/dummy.key:ro"
+    db-dev:
+        image: mongo:8.0.9-noble
+        profiles: ['dev']
+        entrypoint:
+            - bash
+            - -c
+            - |
+                cp /data/dummy.key /data/replica.key
+                chmod 400 /data/replica.key
+                chown 999:999 /data/replica.key
+                exec docker-entrypoint.sh "$$@"
+        command: mongod --replSet rs0 --bind_ip ${MONGODB_ADDRESS:-172.16.100.101} --port ${MONGODB_PORT:-27017} --keyFile /data/replica.key
+        restart: unless-stopped
+        healthcheck:
+            test: mongosh "mongodb://${MONGODB_ADDRESS:-172.16.100.101}:${MONGODB_PORT:-27017}" --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD} --eval 'try { rs.status() } catch(err) { rs.initiate() }' || exit 1
+            interval: 30s
+            timeout: 10s
+            start_period: 30s
+            retries: 5
+        # ports:
+        #   - ${MONGODB_PORT:-27017}:27017
+        logging:
+            options:
+                max-size: 1g
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+        networks:
+            dev-network:
+                ipv4_address: ${MONGODB_ADDRESS:-172.16.100.101}
+        volumes:
+            - './dummy.key:/data/dummy.key:ro'
+            - 'mongo-data:/data/db'
 
 volumes:
-  dev_node_modules:
-  dev_next:
+    mongo-data:
 
 networks:
-  dev-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.16.100.0/24
+    dev-network:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.16.100.0/24
