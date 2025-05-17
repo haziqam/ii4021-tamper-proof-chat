@@ -2,11 +2,9 @@
 
 import { MessageModel } from '@/models/Message'
 import {
-    chatroomRepository,
     messageRepository,
     userRepository,
 } from '@/repositories/prisma/repositories'
-import { io } from '@/index'
 
 interface SendMessagePayload {
     chatroomId: string
@@ -24,7 +22,7 @@ export async function sendMessage(payload: SendMessagePayload) {
         throw new Error('Invalid receiver')
     }
 
-    await fetch(`${process.env.APP_DOMAIN}/notify`, {
+    await fetch(`${process.env.APP_URL}/notify`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

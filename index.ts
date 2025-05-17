@@ -10,7 +10,7 @@ import { Request, Response } from 'express'
 import { MessageModel } from './models/Message'
 
 const dev = process.env.NODE_ENV !== 'production'
-const APP_DOMAIN = process.env.APP_DOMAIN ?? 'http://localhost:3000'
+const APP_URL = process.env.APP_URL ?? 'http://localhost:3000'
 const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
 
 const app = express()
@@ -66,13 +66,7 @@ app.post(
         >,
         res
     ) => {
-        console.log('/notify is called')
-
-        console.log(req.body)
         const message = req.body
-
-        const clients = io.sockets.adapter.rooms.get(message.receiverId)
-
         io.to(message.receiverId).emit('message', message)
         res.status(200).send('Message emitted')
     }

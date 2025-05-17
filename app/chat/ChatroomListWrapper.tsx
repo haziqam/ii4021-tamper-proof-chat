@@ -6,10 +6,15 @@ import { useChatStore } from '@/state-stores/chat-store'
 
 import { Chatroom, SignedMessage } from '@/types/chat'
 import { ChatroomList } from './ChatroomList'
+import { useParams } from 'next/navigation'
 
 let socket: Socket | null = null
+const appUrl = process.env.NEXT_PUBLIC_APP_URL
 
 export function ChatroomListWrapper({ chatrooms }: { chatrooms: Chatroom[] }) {
+    const params = useParams()
+    const chatroomId = params.chatroomId as string
+
     const setChatrooms = useChatStore((s) => s.setChatrooms)
     const receiveMessage = useChatStore((s) => s.receiveMessage)
 
@@ -18,7 +23,7 @@ export function ChatroomListWrapper({ chatrooms }: { chatrooms: Chatroom[] }) {
     }, [chatrooms, setChatrooms])
 
     useEffect(() => {
-        socket = io('http://localhost:3000', {
+        socket = io(appUrl, {
             withCredentials: true,
         })
 
@@ -34,11 +39,14 @@ export function ChatroomListWrapper({ chatrooms }: { chatrooms: Chatroom[] }) {
                     chatroomId: string
                 }
             ) => {
-                console.log('Received message: ')
-                receiveMessage(message.chatroomId, {
-                    ...message,
-                    sentAt: new Date(message.sentAt),
-                })
+                receiveMessage(
+                    message.chatroomId,
+                    {
+                        ...message,
+                        sentAt: new Date(message.sentAt),
+                    },
+                    message.chatroomId === chatroomId
+                )
             }
         )
 
