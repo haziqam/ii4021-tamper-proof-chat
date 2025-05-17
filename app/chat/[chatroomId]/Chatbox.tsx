@@ -152,12 +152,19 @@ interface MessageBubbleProps {
 function SentMessageBubble(props: MessageBubbleProps) {
     const { message, ref } = props
     return (
-        <div className="w-full flex justify-end" ref={ref}>
-            <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
-                <div className="text-sm font-semibold">
-                    {message.senderUsername}
+        <div>
+            <div className="w-full flex justify-end" ref={ref}>
+                <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
+                    <div>
+                        <div className="text-sm font-semibold">
+                            {message.senderUsername}
+                        </div>
+                        <div>{message.message}</div>
+                    </div>
                 </div>
-                <div>{message.message}</div>
+            </div>
+            <div className="text-end">
+                Sent at: {message.sentAt.toLocaleString()}
             </div>
         </div>
     )

@@ -6,7 +6,7 @@ import {
     messageRepository,
     userRepository,
 } from '@/repositories/prisma/repositories'
-import { io } from '@/socket/index'
+import { io } from '@/index'
 
 interface SendMessagePayload {
     chatroomId: string
@@ -20,6 +20,21 @@ export async function sendMessage(payload: SendMessagePayload) {
     const receiverUsername = message.receiverUsername
     const receiver = await userRepository.getByUsername(receiverUsername)
 
-    io.to(receiver!.id).emit('message', message)
+    if (!receiver) {
+        throw new Error('Invalid receiver')
+    }
+
+    await fetch(`${process.env.APP_DOMAIN}/notify`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            ...sentMessage,
+            receiverId: receiver.id,
+            chatroomId: chatroomId,
+        }),
+    })
+
     return { sentMessage }
 }

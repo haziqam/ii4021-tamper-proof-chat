@@ -46,7 +46,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
     setChatrooms: (chatrooms) => set({ chatrooms }),
 
     sendMessage: async (chatroomId, message) => {
-        const { sentMessage } = await sendMessage({ chatroomId, message })
+        const result = await sendMessage({ chatroomId, message })
+        const { sentMessage } = result
         const currentLastMessages = get().lastMessages
         set({ lastMessages: [...currentLastMessages, sentMessage] })
     },
