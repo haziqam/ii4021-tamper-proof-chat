@@ -15,13 +15,12 @@ services:
             dockerfile: ./Dockerfile.dev
         develop:
             watch:
-                - action: rebuild
-                  path: package.json
+            - action: rebuild
+              path: ./package.json
         profiles: [ 'dev' ]
         ports:
             - 3000:3000
             - 9999:9999
-
         volumes:
             - /app/generated/prisma
             - /app/node_modules

@@ -6,7 +6,9 @@ Dockerfile*
 node_modules
 npm-debug.log
 .next
+next-env.d.ts
 generated/prisma
 
 README.md
 .git
+.gitignore

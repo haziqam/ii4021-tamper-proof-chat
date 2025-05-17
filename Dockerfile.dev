@@ -12,4 +12,4 @@ EXPOSE 9999
 
 ENV PORT=3000
 
-CMD ["sh", "-c", "npx prisma generate && npm run dev & npm run socket"]
+CMD ["sh", "-c", "npx prisma generate && npm run dev"]
