@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label'
 import { ChangeEventHandler, FormEventHandler, useState } from 'react'
 import { register } from '@/use-cases/mock/register'
 import { generateKeyPair } from '@/use-cases/generateKeyPair'
+import { setPrivateKey } from '@/private-key-store/opfs'
 
 export function RegisterForm() {
     const [formData, setFormData] = useState({
@@ -20,6 +21,9 @@ export function RegisterForm() {
         password: '',
         confirmPassword: '',
     })
+
+    const formUnfilled =
+        !formData.username || !formData.password || !formData.confirmPassword
 
     const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const { id, value } = e.target
@@ -29,10 +33,13 @@ export function RegisterForm() {
         }))
     }
 
-    const handleSubmit: FormEventHandler = (e) => {
+    const handleSubmit: FormEventHandler = async (e) => {
+        if (formUnfilled) return
+
         e.preventDefault()
-        const keyPair = generateKeyPair()
-        register({ ...formData, publicKey: keyPair.publicKey })
+        const { publicKey, privateKey } = generateKeyPair()
+        setPrivateKey(formData.username, privateKey)
+        await register({ ...formData, publicKey: publicKey })
     }
 
     return (
@@ -83,7 +90,11 @@ export function RegisterForm() {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <Button className="w-full" type="submit">
+                    <Button
+                        className="w-full"
+                        type="submit"
+                        disabled={formUnfilled}
+                    >
                         Register
                     </Button>
                 </CardFooter>

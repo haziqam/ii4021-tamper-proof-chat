@@ -18,6 +18,7 @@ import {
 } from 'react'
 import { signMessage } from '@/use-cases/signMessage'
 import { SignedMessage } from '@/types/chat'
+import { getPrivateKey } from '@/private-key-store/opfs'
 
 interface ChatboxProps {
     messages: SignedMessage[]
@@ -182,8 +183,14 @@ function ChatboxInputText() {
             sentAt: new Date(),
         }
 
-        const signedMessage = signMessage(message, 'PRIVATE_KEY') // Nanti diubah
+        const privateKey = await getPrivateKey(userInfo.username)
 
+        if (!privateKey) {
+            console.error('Private key not found')
+            return
+        }
+
+        const signedMessage = signMessage(message, privateKey)
         await sendMessage(chatroomId, signedMessage)
         setMessageInput('')
     }
