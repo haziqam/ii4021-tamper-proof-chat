@@ -7,7 +7,6 @@ export type Chatroom = {
         senderUsername: string
         message: string
         sentAt: Date
-        chunkSequence: number
     }
     createdAt: Date
 }
