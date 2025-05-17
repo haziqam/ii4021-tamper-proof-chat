@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { SignJWT } from 'jose'
 import { userRepository } from '@/repositories/prisma/repositories'
+import { comparePassword } from './utils'
 
 interface LoginPayload {
     username: string
@@ -17,14 +18,12 @@ export async function login(payload: LoginPayload) {
 
     // TODO: handle error in real implementation
     if (!user) {
-        console.log('User not found')
-        return
+        throw new Error('User not found')
     }
 
     // TODO: check with hash + salt in the real implementation and throw/return error if not match
-    if (user.password !== payload.password) {
-        console.log('Passwords not match')
-        return
+    if (!(await comparePassword(payload.password, user.password))) {
+        throw new Error('Passwords not match')
     }
 
     const cookieStore = await cookies()
