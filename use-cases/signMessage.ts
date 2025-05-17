@@ -11,7 +11,10 @@ export function hashMessage(message: Omit<Message, 'id'>): string {
         ...message,
         sentAt: message.sentAt.toISOString(),
     }
-    const msgString = JSON.stringify(canonicalMessage)
+    const msgString = JSON.stringify(
+        canonicalMessage,
+        Object.keys(canonicalMessage).sort()
+    )
     return sha3_256(msgString)
 }
 

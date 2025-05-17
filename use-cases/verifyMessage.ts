@@ -6,13 +6,15 @@ import { hashMessage } from './signMessage'
 
 const ec = new EC('secp256k1')
 
-function extractMessage(signed: SignedMessage): Omit<Message, 'id'> {
+function extractMessage(
+    signed: SignedMessage | Omit<SignedMessage, 'id'>
+): Omit<Message, 'id'> {
     const { senderUsername, receiverUsername, message, sentAt } = signed
     return { senderUsername, receiverUsername, message, sentAt }
 }
 
 export function verifySignedMessage(
-    signedMessage: SignedMessage,
+    signedMessage: SignedMessage | Omit<SignedMessage, 'id'>,
     publicKey: string
 ): boolean {
     const message = extractMessage(signedMessage)

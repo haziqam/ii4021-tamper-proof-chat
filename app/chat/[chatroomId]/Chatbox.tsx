@@ -20,6 +20,7 @@ import {
 import { signMessage } from '@/use-cases/signMessage'
 import { SignedMessage } from '@/types/chat'
 import { getPrivateKey } from '@/private-key-store/opfs'
+import { verifySignedMessage } from '@/use-cases/verifyMessage'
 
 interface ChatboxProps {
     messages: SignedMessage[]
@@ -125,7 +126,7 @@ function ChatboxContent() {
                 ref={containerRef}
                 className="h-full overflow-y-auto px-4 py-6 space-y-2"
             >
-                {oldestLoadedPageSequence && oldestLoadedPageSequence > 1 && (
+                {oldestLoadedPageSequence && oldestLoadedPageSequence > 1 ? (
                     <div className="w-full flex justify-center pb-2">
                         <button
                             onClick={handleLoadOlderMessages}
@@ -135,7 +136,7 @@ function ChatboxContent() {
                             {loading ? 'Loading...' : 'Load older messages'}
                         </button>
                     </div>
-                )}
+                ) : null}
 
                 {lastMessages.map(mapMessageToMessageBubble)}
             </div>
@@ -164,15 +165,38 @@ function SentMessageBubble(props: MessageBubbleProps) {
 
 function ReceivedMessageBubble(props: MessageBubbleProps) {
     const { message, ref } = props
+
+    const params = useParams()
+    const chatroomId = params.chatroomId as string
+
+    const chatrooms = useChatStore((state) => state.chatrooms)
+    const activeChatroom = chatrooms.find(
+        (chatroom) => chatroom.id === chatroomId
+    )
+
+    const userInfo = useUserInfo()
+    const peerPublicKey = activeChatroom?.members.find(
+        (member) => member.username !== userInfo?.username
+    )?.publicKey
+
+    if (!peerPublicKey) return
+
+    const isVerified = verifySignedMessage(message, peerPublicKey)
+
     return (
-        <div className="w-full flex justify-start" ref={ref}>
-            <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
-                <div className="text-sm font-semibold">
-                    {message.senderUsername}
+        <div>
+            <div className="w-full flex justify-start" ref={ref}>
+                <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
+                    <div>
+                        <div className="text-sm font-semibold">
+                            {message.senderUsername}
+                        </div>
+                        <div>{message.message}</div>
+                    </div>
                 </div>
-                <div>{message.message}</div>
             </div>
-            <div>isVerified</div>
+            <div>Sent at: {message.sentAt.toLocaleString()}</div>
+            <div>Verified: {isVerified ? 'true' : 'false'}</div>
         </div>
     )
 }
