@@ -12,6 +12,7 @@ import { Send } from 'lucide-react'
 import {
     ChangeEventHandler,
     KeyboardEventHandler,
+    Ref,
     useEffect,
     useRef,
     useState,
@@ -85,7 +86,7 @@ function ChatboxContent() {
     const firstMessageRef = useRef<HTMLDivElement | null>(null)
     const [loading, setLoading] = useState(false)
 
-    const handleManualLoad = async () => {
+    const handleLoadOlderMessages = async () => {
         if (
             (oldestLoadedPageSequence && oldestLoadedPageSequence <= 1) ||
             loading
@@ -94,6 +95,28 @@ function ChatboxContent() {
         setLoading(true)
         await loadOlderMessages(chatroomId)
         setLoading(false)
+    }
+
+    const mapMessageToMessageBubble = (msg: SignedMessage, idx: number) => {
+        const isFirst = idx === 0
+        const isLast = idx === lastMessages.length - 1
+        const isPrevFirst = msg.sentAt === prevFirstMessageSentAt
+        const messageType: 'sentMessage' | 'receivedMessage' =
+            msg.senderUsername === userInfo?.username
+                ? 'sentMessage'
+                : 'receivedMessage'
+        const ref: Ref<HTMLDivElement> = (el) => {
+            if (isFirst) firstMessageRef.current = el
+            if (isPrevFirst) prevFirstMessageRef.current = el
+            if (isLast) bottomElementRef.current = el
+        }
+        const key = `${'messages' + msg.sentAt + '-' + idx}`
+
+        if (messageType == 'sentMessage') {
+            return <SentMessageBubble message={msg} key={key} ref={ref} />
+        }
+
+        return <ReceivedMessageBubble message={msg} key={key} ref={ref} />
     }
 
     return (
@@ -105,7 +128,7 @@ function ChatboxContent() {
                 {oldestLoadedPageSequence && oldestLoadedPageSequence > 1 && (
                     <div className="w-full flex justify-center pb-2">
                         <button
-                            onClick={handleManualLoad}
+                            onClick={handleLoadOlderMessages}
                             disabled={loading}
                             className="px-4 py-1 text-sm font-medium text-white bg-blue-500 rounded shadow hover:bg-blue-600 disabled:opacity-50"
                         >
@@ -114,36 +137,42 @@ function ChatboxContent() {
                     </div>
                 )}
 
-                {lastMessages.map((msg, idx) => {
-                    const isFirst = idx === 0
-                    const isLast = idx === lastMessages.length - 1
-                    const isPrevFirst = msg.sentAt === prevFirstMessageSentAt
-
-                    return (
-                        <div
-                            key={`${'messages' + msg.sentAt + '-' + idx}`}
-                            className={`w-full flex ${
-                                msg.senderUsername === userInfo?.username
-                                    ? 'justify-end'
-                                    : 'justify-start'
-                            }`}
-                            ref={(el) => {
-                                if (isFirst) firstMessageRef.current = el
-                                if (isPrevFirst)
-                                    prevFirstMessageRef.current = el
-                                if (isLast) bottomElementRef.current = el
-                            }}
-                        >
-                            <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
-                                <div className="text-sm font-semibold">
-                                    {msg.senderUsername}
-                                </div>
-                                <div>{msg.message}</div>
-                            </div>
-                        </div>
-                    )
-                })}
+                {lastMessages.map(mapMessageToMessageBubble)}
             </div>
+        </div>
+    )
+}
+
+interface MessageBubbleProps {
+    message: SignedMessage
+    ref: Ref<HTMLDivElement>
+}
+
+function SentMessageBubble(props: MessageBubbleProps) {
+    const { message, ref } = props
+    return (
+        <div className="w-full flex justify-end" ref={ref}>
+            <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
+                <div className="text-sm font-semibold">
+                    {message.senderUsername}
+                </div>
+                <div>{message.message}</div>
+            </div>
+        </div>
+    )
+}
+
+function ReceivedMessageBubble(props: MessageBubbleProps) {
+    const { message, ref } = props
+    return (
+        <div className="w-full flex justify-start" ref={ref}>
+            <div className="bg-gray-300 rounded-lg p-2 w-fit max-w-[80%]">
+                <div className="text-sm font-semibold">
+                    {message.senderUsername}
+                </div>
+                <div>{message.message}</div>
+            </div>
+            <div>isVerified</div>
         </div>
     )
 }
