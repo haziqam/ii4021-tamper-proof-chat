@@ -4,8 +4,9 @@ import { Input } from '@/components/ui/input'
 import { useUserStore } from '@/state-stores/user-store'
 import { ChangeEventHandler, KeyboardEventHandler, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Search } from 'lucide-react'
+import { Home, Search } from 'lucide-react'
 import { DEFAULT_USERS_PER_PAGE } from './constants'
+import Link from 'next/link'
 
 export function UserSearchInput() {
     const [usernameInput, setUsernameInput] = useState('')
@@ -40,6 +41,11 @@ export function UserSearchInput() {
             <Button onClick={handleSearch}>
                 <Search />
             </Button>
+            <Link href="/chat">
+                <Button>
+                    <Home />
+                </Button>
+            </Link>
         </div>
     )
 }

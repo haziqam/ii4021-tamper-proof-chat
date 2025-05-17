@@ -9,12 +9,12 @@ import {
     SidebarContent,
     SidebarGroup,
     SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
     SidebarProvider,
 } from '@/components/ui/sidebar'
 import { UserSearch } from './UserSearch'
+import { Label } from '@/components/ui/label'
 
 interface UserSearchWrapperProps {
     users: User[]
@@ -36,8 +36,8 @@ export function UserSearchWrapper(props: UserSearchWrapperProps) {
             <Sidebar>
                 <SidebarHeader>KriptoChat</SidebarHeader>
                 <SidebarContent>
-                    <SidebarGroup>
-                        <SidebarGroupLabel>Users</SidebarGroupLabel>
+                    <SidebarGroup className="overflow-y-hidden">
+                        <Label className="p-2">Users</Label>
                         <SidebarGroupContent>
                             <SidebarMenu>
                                 <UserSearch />

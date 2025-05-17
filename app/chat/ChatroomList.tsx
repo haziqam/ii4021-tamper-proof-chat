@@ -6,7 +6,6 @@ import {
     SidebarContent,
     SidebarGroup,
     SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
@@ -14,9 +13,7 @@ import {
     SidebarHeader,
     SIDEBAR_WIDTH,
 } from '@/components/ui/sidebar'
-import { useSyncedChatroomId } from '@/hooks/use-synced-chatroom-id'
 import { useUserInfo } from '@/hooks/user-info-store'
-// import { useChatStore } from '@/state-stores/chat-store'
 import { useChatStore } from '@/state-stores/chat-store-2'
 import { Chatroom } from '@/types/chat'
 import { logout } from '@/use-cases/logout'
@@ -33,6 +30,7 @@ import { MouseEventHandler, startTransition } from 'react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
+import { Label } from '@/components/ui/label'
 
 export function ChatroomList() {
     const chatrooms = useChatStore((state) => state.chatrooms)
@@ -60,9 +58,10 @@ export function ChatroomList() {
         <SidebarProvider>
             <Sidebar>
                 <SidebarHeader>KriptoChat</SidebarHeader>
+                <Label className="p-2">Conversations</Label>
+
                 <SidebarContent>
                     <SidebarGroup>
-                        <SidebarGroupLabel>Conversations</SidebarGroupLabel>
                         <SidebarGroupContent>
                             <SidebarMenu>
                                 {chatrooms.map((chatroom) => (

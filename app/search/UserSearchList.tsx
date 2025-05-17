@@ -11,7 +11,7 @@ export function UserSearchList() {
     const users = useUserStore((state) => state.users)
 
     return (
-        <div className="space-y-2 h-183 overflow-y-auto">
+        <div className="h-[72svh] space-y-2 overflow-y-auto">
             {users.map((user, idx) => (
                 <UserListItem
                     user={user}
