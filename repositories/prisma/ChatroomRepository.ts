@@ -13,39 +13,33 @@ function transformPublicMember(user: UserModel): PublicUserModel {
 
 export class ChatroomRepository implements IChatroomRepository {
     async create(userIds: string[]): Promise<ChatroomModel> {
-        const users = await prisma.user.findMany({
-            where: {
-                id: {
-                    in: userIds
+        return await prisma.$transaction(async (tx) => {
+            const users = await tx.user.findMany({
+                where: {
+                    id: {
+                        in: userIds
+                    }
                 }
-            }
+            })
+            const newChatroom = await tx.chatroom.create({
+                data: {
+                    userIds: userIds,
+                    members: users.map(transformPublicMember).sort()
+                }
+            });
+            await tx.user.updateMany({
+                where: {
+                    id: {
+                        in: userIds
+                    }
+                },
+                data: {
+                    chatroomIds: {
+                        push: newChatroom.id
+                    }
+                }
+            })
+            return newChatroom;
         })
-        const newChatroom = await prisma.chatroom.create({
-            data: {
-                userIds: userIds,
-                members: users.map(transformPublicMember)
-            }
-        });
-        await prisma.chatPage.create({
-            data: {
-                pageSequence: 0,
-                isLastSequence: true,
-                messages: [],
-                chatroomId: newChatroom.id,
-            }
-        });
-        await prisma.user.updateMany({
-            where: {
-                id: {
-                    in: userIds
-                }
-            },
-            data: {
-                chatroomIds: {
-                    push: newChatroom.id
-                }
-            }
-        })
-        return newChatroom;
     }
 }

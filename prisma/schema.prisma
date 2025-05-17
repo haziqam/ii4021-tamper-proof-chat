@@ -38,6 +38,7 @@ model ChatPage {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   pageSequence   Int
   isLastSequence Boolean   @default(true)
+  messageCount   Int       @default(0)
   messages       Message[]
   chatroomId     String    @db.ObjectId
   Chatroom       Chatroom  @relation(fields: [chatroomId], references: [id])
