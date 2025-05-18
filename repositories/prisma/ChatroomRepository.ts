@@ -6,7 +6,16 @@ import { transformPublicMember } from "./transform";
 
 export class ChatroomRepository implements IChatroomRepository {
     async create(userIds: string[]): Promise<ChatroomModel> {
+        const sortedIds = userIds.sort()
         const chatroom = await prisma.$transaction(async (tx) => {
+            const existingChatroom = await tx.chatroom.findUnique({
+                where: {
+                    userIds: sortedIds
+                }
+            })
+            if (existingChatroom !== null) {
+                return existingChatroom
+            }
             const users = await tx.user.findMany({
                 where: {
                     id: {
@@ -16,7 +25,7 @@ export class ChatroomRepository implements IChatroomRepository {
             })
             const newChatroom = await tx.chatroom.create({
                 data: {
-                    userIds: userIds,
+                    userIds: sortedIds,
                     members: users.map(transformPublicMember).sort()
                 }
             });
@@ -32,14 +41,14 @@ export class ChatroomRepository implements IChatroomRepository {
                     }
                 }
             })
+            await tx.chatPage.create({
+                data: {
+                    chatroomId: newChatroom.id,
+                    messageCount: 0,
+                    messages: []
+                }
+            })
             return newChatroom;
-        });
-        await prisma.chatPage.create({
-            data: {
-                chatroomId: chatroom.id,
-                messageCount: 0,
-                messages: []
-            }
         });
         return chatroom
     }

@@ -21,7 +21,8 @@ interface ChatState {
     // Used when receiving event from the websocket
     receiveMessage: (
         chatroomId: string,
-        message: SignedMessage
+        message: SignedMessage,
+        isChatroomIdActive: boolean
     ) => Promise<void>
 
     // Used when opening a chatroom
@@ -46,14 +47,53 @@ export const useChatStore = create<ChatState>((set, get) => ({
     setChatrooms: (chatrooms) => set({ chatrooms }),
 
     sendMessage: async (chatroomId, message) => {
-        const { sentMessage } = await sendMessage({ chatroomId, message })
+        const result = await sendMessage({ chatroomId, message })
+        const { sentMessage } = result
         const currentLastMessages = get().lastMessages
         set({ lastMessages: [...currentLastMessages, sentMessage] })
+
+        const chatrooms = get().chatrooms
+
+        const updatedChatrooms = chatrooms
+            .map((chatroom) => {
+                if (chatroom.id !== chatroomId) {
+                    return chatroom
+                }
+                return {
+                    ...chatroom,
+                    lastMessage: message,
+                }
+            })
+            .toSorted()
+
+        set({ chatrooms: updatedChatrooms })
     },
 
-    receiveMessage: async (chatroomId, message) => {
+    receiveMessage: async (
+        chatroomId,
+        message,
+        isChatroomIdActive: boolean
+    ) => {
         const currentLastMessages = get().lastMessages
-        set({ lastMessages: [...currentLastMessages, message] })
+        if (isChatroomIdActive) {
+            set({ lastMessages: [...currentLastMessages, message] })
+        }
+
+        const chatrooms = get().chatrooms
+
+        const updatedChatrooms = chatrooms
+            .map((chatroom) => {
+                if (chatroom.id !== chatroomId) {
+                    return chatroom
+                }
+                return {
+                    ...chatroom,
+                    lastMessage: message,
+                }
+            })
+            .toSorted()
+
+        set({ chatrooms: updatedChatrooms })
     },
 
     initializeLatestMessages: async (lastMessages, pageSequence) => {

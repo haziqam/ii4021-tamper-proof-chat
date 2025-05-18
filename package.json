@@ -1,9 +1,10 @@
 {
     "name": "tamper-proof-chat-app",
+    "type": "module",
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev --turbopack",
+        "dev": "tsx watch index.ts",
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
@@ -23,13 +24,17 @@
         "bcrypt": "^6.0.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "cookie": "^1.0.2",
         "elliptic": "^6.6.1",
+        "express": "^5.1.0",
         "jose": "^6.0.10",
         "js-sha3": "^0.9.3",
         "lucide-react": "^0.507.0",
         "next": "15.3.1",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "socket.io": "^4.8.1",
+        "socket.io-client": "^4.8.1",
         "tailwind-merge": "^3.2.0",
         "use-debounce": "^10.0.4",
         "uuid": "^11.1.0",
@@ -39,10 +44,12 @@
         "@eslint/eslintrc": "^3",
         "@tailwindcss/postcss": "^4",
         "@types/bcrypt": "^5.0.2",
+        "@types/cookie": "^1.0.0",
         "@types/elliptic": "^6.4.18",
+        "@types/express": "^5.0.2",
         "@types/jest": "^29.5.14",
         "@types/jsonwebtoken": "^9.0.9",
-        "@types/node": "^20",
+        "@types/node": "^20.17.47",
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "@types/uuid": "^10.0.0",
@@ -53,7 +60,8 @@
         "prisma": "^6.7.0",
         "tailwindcss": "^4",
         "ts-jest": "^29.3.2",
+        "tsx": "^4.19.4",
         "tw-animate-css": "^1.2.9",
-        "typescript": "^5"
+        "typescript": "^5.8.3"
     }
 }

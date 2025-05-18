@@ -3,7 +3,7 @@ services:
         build:
             context: ./
             dockerfile: ./Dockerfile
-        profiles: ['staging']
+        profiles: [ 'staging' ]
         ports:
             - 3000:3000
         env_file:
@@ -13,9 +13,14 @@ services:
         build:
             context: ./
             dockerfile: ./Dockerfile.dev
-        profiles: ['dev']
+        develop:
+            watch:
+                - action: rebuild
+                  path: ./package.json
+        profiles: [ 'dev' ]
         ports:
             - 3000:3000
+            - 9999:9999
         volumes:
             - /app/generated/prisma
             - /app/node_modules
@@ -32,15 +37,15 @@ services:
 
     db-dev:
         image: mongo:8.0.9-noble
-        profiles: ['dev']
+        profiles: [ 'dev' ]
         entrypoint:
             - bash
             - -c
             - |
-                cp /data/dummy.key /data/replica.key
-                chmod 400 /data/replica.key
-                chown 999:999 /data/replica.key
-                exec docker-entrypoint.sh "$$@"
+              cp /data/dummy.key /data/replica.key
+              chmod 400 /data/replica.key
+              chown 999:999 /data/replica.key
+              exec docker-entrypoint.sh "$$@"
         command: mongod --replSet rs0 --bind_ip ${MONGODB_ADDRESS:-172.16.100.101} --port ${MONGODB_PORT:-27017} --keyFile /data/replica.key
         restart: unless-stopped
         healthcheck:
@@ -53,7 +58,7 @@ services:
         #   - ${MONGODB_PORT:-27017}:27017
         logging:
             options:
-                max-size: 1g
+                max-size: 1k
         environment:
             - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -66,6 +71,7 @@ services:
 
 volumes:
     mongo-data:
+
 
 networks:
     dev-network:

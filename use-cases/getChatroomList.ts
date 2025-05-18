@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 import { jwtVerify } from 'jose'
-import { AccessTokenPayload } from '@/middleware'
+import { AccessTokenPayload } from '@/jwt/access-token'
 import { userRepository } from '@/repositories/prisma/repositories'
 import { ChatroomModel } from '@/models/Chatroom'
 
